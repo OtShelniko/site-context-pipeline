@@ -100,6 +100,15 @@ site-context-pipeline build-inventory \
     --source examples/demo-client/input/urls.csv \
     --write
 
+# 2a. (alternative) Or feed a sitemap.xml — same command, different format.
+#     Auto-detection picks "sitemap" from the .xml extension; --format
+#     sitemap forces it explicitly.
+# site-context-pipeline build-inventory \
+#     --client demo \
+#     --source path/to/sitemap.xml \
+#     --format sitemap \
+#     --write
+
 # 3. Build the internal link graph from an edge CSV.
 site-context-pipeline build-link-graph \
     --client demo \
@@ -156,7 +165,7 @@ without it, the command runs as a dry-run and prints the planned writes.
 | Command | What it does | Reads | Writes |
 |---|---|---|---|
 | `init` | Creates the `clients/<id>/` directory tree and seed files. | — | `clients/<id>/{input,config,data,output,logs}/`, `input/{urls.csv,links.csv,project.md}` placeholders |
-| `build-inventory --source PATH` | Normalises URLs, classifies each as `home`/`service`/`blog`/`category`/`landing`/`other`, records the rule that fired. | CSV or JSON URL list | `data/content_inventory.json` |
+| `build-inventory --source PATH` | Normalises URLs, classifies each as `home`/`service`/`blog`/`category`/`landing`/`other`, records the rule that fired. Accepts CSV, JSON, or sitemap XML via `--format auto|csv|json|sitemap`. | CSV, JSON, or sitemap.xml URL list | `data/content_inventory.json` |
 | `build-link-graph --source PATH` | Joins an edge list with the inventory; tags commercial pages with low blog inlinks. | CSV or JSON edge list | `data/internal_link_graph.json` |
 | `import-keywords --provider NAME --source PATH` | Reads keyword metrics from a provider into a normalised artifact. | provider-specific | `data/keyword_metrics.json` |
 | `import-search-performance --provider NAME --source PATH` | Reads per-query performance data into a normalised artifact. | provider-specific | `data/search_performance.json` |
