@@ -7,11 +7,19 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Nothing yet. See [`ROADMAP.md`](./ROADMAP.md) for what is planned.
+
+## [0.3.0] — 2026-05-31
+
+Adds a deterministic content QA module, configurable classifier
+rules, and the first search-evidence provider — closing every
+0.3 roadmap item.
+
 ### Added
 
 - **Deterministic content QA module** (#5) — new `site_context_pipeline.qa`
   module exposes `analyse_draft` / `analyse_draft_file` plus the
-  `QAReport` and `QAFinding` dataclasses. Nine checks ship in 0.x:
+  `QAReport` and `QAFinding` dataclasses. Nine checks ship in 0.3:
   `single_h1`, `heading_hierarchy`, `keyphrase_in_h1`,
   `keyphrase_density`, `intro_length`, `competing_anchors`,
   `image_alt`, `links_resolve`, `slug_keyphrase`. No LLM involvement;
@@ -147,7 +155,8 @@ Initial public extraction.
   (e.g. `google-ads`). Core schemas, CLI verbs, and artifact field
   names stay vendor-neutral.
 
-[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.3.0
 [0.2.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.2.0
 [0.1.1]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.1.1
 [0.1.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.1.0
