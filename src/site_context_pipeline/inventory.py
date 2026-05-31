@@ -23,6 +23,7 @@ from typing import Any
 from urllib.parse import urlparse, urlunparse
 
 from .clients import ClientPaths, read_json, write_json
+from .importers import SitemapImportError, read_sitemap
 from .schemas import InventoryItem, PageType
 
 # Default rule set. Each rule is a (page_type, marker) pair. The marker is
@@ -64,18 +65,27 @@ def build_inventory(
     *,
     write: bool,
     source: str | Path | None = None,
+    source_format: str | None = None,
 ) -> dict[str, Any]:
-    """Build ``data/content_inventory.json`` from a CSV or JSON URL list.
+    """Build ``data/content_inventory.json`` from a CSV / JSON / sitemap input.
 
     The ``source`` argument may be:
 
-    * an explicit path to a ``.csv`` or ``.json`` file, or
+    * an explicit path to a ``.csv``, ``.json``, or sitemap ``.xml`` file, or
     * ``None``, in which case ``<client>/input/urls.csv`` is read.
 
-    Inputs from JSON should be a list of objects with at least a ``url`` key.
+    ``source_format`` forces a particular reader. Accepted values:
+
+    * ``None`` or ``"auto"`` — pick by file extension (``.csv`` / ``.json`` /
+      ``.xml``);
+    * ``"csv"``, ``"json"`` — read the existing flat formats;
+    * ``"sitemap"`` — read a ``sitemap.xml`` (or sitemap-index) using the
+      offline importer in ``site_context_pipeline.importers.sitemap_xml``.
+      Sitemap rows carry only a URL plus optional metadata; title, H1, and
+      counts stay ``None``.
     """
     source_path = _resolve_source(source, paths)
-    rows, source_format, parse_warnings = _read_source(source_path)
+    rows, detected_format, parse_warnings = _read_source(source_path, source_format)
 
     classifier_rules, classifier_source = _load_classifier_rules(paths)
     commercial_urls = _load_commercial_urls(paths)
@@ -112,7 +122,7 @@ def build_inventory(
                 word_count=_int_or_none(raw_row.get("word_count")),
                 inlinks_count=_int_or_none(raw_row.get("inlinks_count")),
                 outlinks_count=_int_or_none(raw_row.get("outlinks_count")),
-                source=source_format,
+                source=detected_format,
             )
         )
 
@@ -133,7 +143,7 @@ def build_inventory(
     result: dict[str, Any] = {
         "planned_writes": [str(inventory_path)],
         "source_path": str(source_path) if source_path else None,
-        "source_format": source_format,
+        "source_format": detected_format,
         "items_count": len(serialised),
         "page_type_counts": dict(sorted(counts.items())),
         "warnings": warnings,
@@ -213,17 +223,74 @@ def _resolve_source(source: str | Path | None, paths: ClientPaths) -> Path | Non
     return Path(source)
 
 
-def _read_source(source_path: Path | None) -> tuple[list[dict[str, Any]], str, list[str]]:
+def _read_source(
+    source_path: Path | None, source_format: str | None
+) -> tuple[list[dict[str, Any]], str, list[str]]:
+    """Pick the right reader.
+
+    The selection rule:
+
+    * ``source_format`` (when set to something other than ``"auto"``) wins.
+    * Otherwise the file extension is used: ``.csv`` → CSV, ``.json`` → JSON,
+      ``.xml`` → sitemap.
+    * If neither yields a known format, return a clear warning so the caller
+      can surface it.
+    """
     if source_path is None:
         return [], "missing", ["no_source_provided_and_default_urls_csv_not_found"]
     if not source_path.exists():
         return [], "missing", [f"source_not_found:{source_path}"]
-    suffix = source_path.suffix.lower()
-    if suffix == ".csv":
+
+    chosen = (source_format or "auto").lower()
+    if chosen == "auto":
+        suffix = source_path.suffix.lower()
+        if suffix == ".csv":
+            chosen = "csv"
+        elif suffix == ".json":
+            chosen = "json"
+        elif suffix == ".xml":
+            chosen = "sitemap"
+        else:
+            return [], "unknown", [f"unsupported_source_extension:{suffix}"]
+
+    if chosen == "csv":
         return _read_csv(source_path), "csv", []
-    if suffix == ".json":
+    if chosen == "json":
         return _read_json_list(source_path), "json", []
-    return [], "unknown", [f"unsupported_source_extension:{suffix}"]
+    if chosen == "sitemap":
+        return _read_sitemap_source(source_path)
+    return [], "unknown", [f"unsupported_source_format:{chosen}"]
+
+
+def _read_sitemap_source(
+    source_path: Path,
+) -> tuple[list[dict[str, Any]], str, list[str]]:
+    """Adapt sitemap rows to the inventory's expected dict shape.
+
+    A sitemap exposes only the URL plus optional metadata (lastmod /
+    changefreq / priority). All other inventory fields stay ``None`` —
+    a later step (e.g. a Screaming Frog import or a manual edit) can fill
+    them in.
+    """
+    try:
+        sitemap = read_sitemap(source_path)
+    except SitemapImportError as error:
+        return [], "sitemap", [f"sitemap_import_error:{error}"]
+    rows: list[dict[str, Any]] = []
+    for entry in sitemap.get("rows") or []:
+        rows.append(
+            {
+                "url": entry.get("url"),
+                "title": None,
+                "h1": None,
+                "status_code": None,
+                "word_count": None,
+                "inlinks_count": None,
+                "outlinks_count": None,
+            }
+        )
+    warnings = [f"sitemap:{w}" for w in sitemap.get("warnings") or []]
+    return rows, "sitemap", warnings
 
 
 def _read_csv(path: Path) -> list[dict[str, Any]]:

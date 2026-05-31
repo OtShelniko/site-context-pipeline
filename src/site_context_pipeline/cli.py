@@ -98,15 +98,22 @@ def _build_parser() -> argparse.ArgumentParser:
     inv = sub.add_parser(
         "build-inventory",
         parents=[common_client],
-        help="Build content_inventory.json from a CSV or JSON URL list",
+        help="Build content_inventory.json from a CSV / JSON / sitemap.xml URL list",
     )
     inv.add_argument(
         "--source",
         default=None,
         help=(
-            "Path to a CSV or JSON URL list "
+            "Path to a CSV, JSON, or sitemap XML URL list "
             "(defaults to <client>/input/urls.csv)"
         ),
+    )
+    inv.add_argument(
+        "--format",
+        dest="source_format",
+        default="auto",
+        choices=["auto", "csv", "json", "sitemap"],
+        help="Force a particular reader; default 'auto' picks by file extension.",
     )
 
     lnk = sub.add_parser(
@@ -193,7 +200,12 @@ def _run_init(paths: ClientPaths, *, write: bool) -> dict[str, Any]:
 
 
 def _run_build_inventory(paths: ClientPaths, args: argparse.Namespace) -> dict[str, Any]:
-    data = build_inventory(paths, write=args.write, source=args.source)
+    data = build_inventory(
+        paths,
+        write=args.write,
+        source=args.source,
+        source_format=getattr(args, "source_format", None),
+    )
     return _result_from_data(paths, "build-inventory", write=args.write, data=data)
 
 

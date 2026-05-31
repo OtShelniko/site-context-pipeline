@@ -7,7 +7,21 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet. See [`ROADMAP.md`](./ROADMAP.md) for what is planned.
+### Added
+
+- **Sitemap XML importer** (`importers.sitemap_xml.read_sitemap`) and a
+  new `--format sitemap` flag on `build-inventory`. The importer reads
+  a single `urlset` sitemap or follows a local `sitemapindex` to its
+  child sitemaps. Pure stdlib (`xml.etree.ElementTree`); no network
+  fetching — sitemap-index entries that point at remote URLs are
+  reported in `warnings` and skipped.
+- `build-inventory --format` accepts `auto` (default), `csv`, `json`,
+  `sitemap`. `auto` picks the reader from the file extension.
+
+### Changed
+
+- `build_inventory` now takes an optional `source_format` parameter to
+  match the new CLI flag. Existing CSV/JSON usage is unchanged.
 
 ## [0.1.0] — 2026-05-31
 

@@ -42,9 +42,9 @@ Initial OSS extraction with the offline core. Shipped:
 
 Goal: make it easy to feed data in without hand-rolling CSVs.
 
-- **Sitemap XML importer** — read one or more `sitemap.xml` (and
-  sitemap-index) files into the inventory CSV format. Offline; no
-  HTTP fetching.
+- **Sitemap XML importer** ✅ *(merged in `Unreleased`)* — read one or more
+  `sitemap.xml` (and sitemap-index) files into the inventory CSV format.
+  Offline; no HTTP fetching.
 - **Screaming Frog CSV importer** — accept the canonical Screaming
   Frog `internal_*.csv` and `*_inlinks/*_outlinks.csv` exports
   directly, without a manual reshape step.
