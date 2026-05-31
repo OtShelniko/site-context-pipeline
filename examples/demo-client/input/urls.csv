@@ -1,0 +1,9 @@
+url,title,h1,status_code,word_count,inlinks_count,outlinks_count
+https://example.com/,Example Co — Home,Welcome to Example Co,200,180,8,12
+https://example.com/services/,Services,Our services,200,420,5,9
+https://example.com/services/local-delivery/,Local delivery,Local delivery service,200,640,4,6
+https://example.com/services/long-haul-delivery/,Long-haul delivery,Long-haul delivery service,200,710,3,5
+https://example.com/blog/how-to-plan-delivery/,How to plan a delivery,How to plan a delivery,200,1100,2,3
+https://example.com/blog/delivery-cost-guide/,Delivery cost guide,Delivery cost guide,200,1450,1,4
+https://example.com/about/,About,About us,200,300,3,2
+https://example.com/pricing/,Pricing,Pricing and plans,200,260,6,4

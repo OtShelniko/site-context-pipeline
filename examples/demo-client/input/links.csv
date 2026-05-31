@@ -1,0 +1,7 @@
+source_url,target_url,anchor_text
+https://example.com/,https://example.com/services/,Services
+https://example.com/,https://example.com/about/,About us
+https://example.com/services/,https://example.com/services/local-delivery/,Local delivery
+https://example.com/services/,https://example.com/services/long-haul-delivery/,Long-haul delivery
+https://example.com/blog/how-to-plan-delivery/,https://example.com/services/local-delivery/,local delivery service
+https://example.com/blog/delivery-cost-guide/,https://example.com/pricing/,see pricing

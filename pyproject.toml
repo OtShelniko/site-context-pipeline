@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "site-context-pipeline"
+version = "0.1.0"
+description = "Convert website crawls, URL inventories, and editorial notes into structured context packs for human-reviewed LLM-assisted content workflows."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+keywords = [
+    "content",
+    "context",
+    "llm",
+    "seo",
+    "site-audit",
+    "knowledge-base",
+]
+authors = [
+    { name = "site-context-pipeline contributors" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing :: Markup",
+]
+# Standard library only for the core. Optional adapters that touch the
+# network live behind extras and are not implemented in 0.1.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/OtShelniko/site-context-pipeline"
+Issues = "https://github.com/OtShelniko/site-context-pipeline/issues"
+
+[project.scripts]
+site-context-pipeline = "site_context_pipeline.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/site_context_pipeline"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/examples",
+    "/README.md",
+    "/LICENSE",
+    "/CONTRIBUTING.md",
+    "/CODE_OF_CONDUCT.md",
+    "/SECURITY.md",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+    "W",   # pycodestyle warnings
+]
+ignore = [
+    "E501",  # line length handled by formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B", "N"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-q"
+testpaths = ["tests"]

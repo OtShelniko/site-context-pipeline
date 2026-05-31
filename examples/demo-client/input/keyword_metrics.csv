@@ -1,0 +1,7 @@
+query,avg_monthly_searches,competition,geo,language,source_url
+local delivery planning,1900,LOW,US,en,https://example.com/blog/how-to-plan-delivery/
+delivery cost guide,2400,MEDIUM,US,en,https://example.com/blog/delivery-cost-guide/
+same day delivery checklist,720,LOW,US,en,
+business delivery pricing,880,MEDIUM,US,en,https://example.com/pricing/
+warehouse delivery service,540,MEDIUM,US,en,https://example.com/services/long-haul-delivery/
+local delivery service,3600,HIGH,US,en,https://example.com/services/local-delivery/
