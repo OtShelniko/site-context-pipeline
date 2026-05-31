@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, reopened, synchronize, edited, labeled, unlabeled]
+  # PR-event runs are intentionally not enabled here. release-drafter
+  # requires its config file to live on the default branch, so PR runs
+  # would always fail on the PR that initially adds the config. The
+  # autolabeler will catch up the next time a push lands on `main`.
   workflow_dispatch:
 
 permissions:
