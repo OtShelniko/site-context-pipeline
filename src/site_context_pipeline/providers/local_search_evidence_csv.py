@@ -127,19 +127,25 @@ def _read_rows(path: Path) -> tuple[list[dict[str, str]], list[str]]:
     try:
         with path.open("r", encoding="utf-8-sig", newline="") as file:
             reader = csv.DictReader(file)
-            rows = [
-                {(k or "").strip(): (v if v is None else str(v)) for k, v in row.items()}
-                for row in reader
-            ]
+            rows = [_clean_row(row) for row in reader]
     except UnicodeDecodeError:
         warnings.append("csv_decoded_with_cp1251_fallback")
         with path.open("r", encoding="cp1251", newline="") as file:
             reader = csv.DictReader(file)
-            rows = [
-                {(k or "").strip(): (v if v is None else str(v)) for k, v in row.items()}
-                for row in reader
-            ]
+            rows = [_clean_row(row) for row in reader]
     return rows, warnings
+
+
+def _clean_row(row: dict[str | Any, str | None]) -> dict[str, str]:
+    cleaned: dict[str, str] = {}
+    for key, value in row.items():
+        if not isinstance(key, str):
+            continue
+        stripped_key = key.strip()
+        if not stripped_key:
+            continue
+        cleaned[stripped_key] = "" if value is None else str(value)
+    return cleaned
 
 
 def _normalise_header(value: str) -> str:

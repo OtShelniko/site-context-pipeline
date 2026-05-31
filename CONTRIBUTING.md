@@ -33,11 +33,14 @@ pip install -e ".[dev]"
 
 ```bash
 ruff check .
+mypy
 pytest
 ```
 
 CI runs the same commands on Python 3.11 and 3.12, plus a coverage
-upload to Codecov from the 3.12 job.
+upload to Codecov from the 3.12 job. Mypy runs in `--strict` mode
+against `src/site_context_pipeline/` per the configuration in
+`pyproject.toml`.
 
 ## Pre-commit (optional but recommended)
 

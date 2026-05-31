@@ -9,6 +9,11 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Mypy strict mode in CI.** New `[tool.mypy]` config in
+  `pyproject.toml` runs `mypy --strict` over
+  `src/site_context_pipeline/` and the `lint-and-test` CI job now
+  invokes it on every push and pull request. `mypy>=1.11` joined the
+  `[dev]` extra. Strict mode is clean on all 22 source files.
 - **Property-based tests with Hypothesis.** New
   `tests/test_property_based.py` adds 19 property tests covering URL
   normalisation, glob-style path matching, CSV header normalisation,

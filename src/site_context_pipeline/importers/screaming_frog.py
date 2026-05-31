@@ -183,10 +183,7 @@ def _read_csv(path: Path) -> tuple[list[str], list[dict[str, str]]]:
         with path.open("r", encoding="utf-8-sig", newline="") as file:
             reader = csv.DictReader(file)
             headers = list(reader.fieldnames or [])
-            rows = [
-                {(k or "").strip(): (v if v is None else str(v)) for k, v in row.items()}
-                for row in reader
-            ]
+            rows = [_clean_row(row) for row in reader]
         return headers, rows
     except UnicodeDecodeError as error:
         raise ScreamingFrogImportError(
@@ -194,6 +191,18 @@ def _read_csv(path: Path) -> tuple[list[str], list[dict[str, str]]]:
         ) from error
     except csv.Error as error:
         raise ScreamingFrogImportError(f"{path}: csv parse error: {error}") from error
+
+
+def _clean_row(row: dict[str | Any, str | None]) -> dict[str, str]:
+    cleaned: dict[str, str] = {}
+    for key, value in row.items():
+        if not isinstance(key, str):
+            continue
+        stripped_key = key.strip()
+        if not stripped_key:
+            continue
+        cleaned[stripped_key] = "" if value is None else str(value)
+    return cleaned
 
 
 def _peek_headers(path: Path) -> tuple[list[str], None]:
