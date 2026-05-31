@@ -9,6 +9,23 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Search-evidence provider interface** (#3) — `providers.base`
+  finalises the `SearchEvidenceProvider` abstract base; the registry
+  exposes a third map (`SEARCH_EVIDENCE_PROVIDERS`) and matching
+  `get_search_evidence_provider` accessor.
+- **Local SERP-evidence CSV provider** — new `local-serp-csv`
+  reads hand-curated rows (`query`, `rank`, `title`, `url`,
+  `snippet`, `page_type`) and emits `SearchEvidence` rows into
+  `data/search_evidence.json`. Tolerant header aliases
+  (`position` ↔ `rank`, `Page Type` ↔ `page_type`, etc.). Stdlib only.
+- **CLI verb `import-search-evidence`** with the same
+  `--provider / --source / --config / --write` shape as the existing
+  import commands.
+- **Context-pack integration** — when `data/search_evidence.json`
+  exists, the pack adds a `search_evidence` block (rows, query count,
+  per-query top-5 results with page_type counts) and the Markdown
+  pack renders a "What competitors do" section. Missing → omitted
+  silently; no scraping ever happens.
 - **Configurable classifier rules** (#4) — `config/classifier.json`
   now supports per-rule `priority`, `exclude_patterns` (negation),
   and `allow_urls` (forced matches) on top of the existing

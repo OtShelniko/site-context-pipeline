@@ -22,25 +22,31 @@ from .base import (
     ProviderConfigurationError,
     ProviderError,
     ProviderNotConfiguredError,
+    SearchEvidenceProvider,
     SearchPerformanceProvider,
 )
 from .registry import (
     KEYWORD_PROVIDERS,
+    SEARCH_EVIDENCE_PROVIDERS,
     SEARCH_PERFORMANCE_PROVIDERS,
     available_providers,
     get_keyword_provider,
+    get_search_evidence_provider,
     get_search_performance_provider,
 )
 
 __all__ = [
     "KEYWORD_PROVIDERS",
+    "SEARCH_EVIDENCE_PROVIDERS",
     "SEARCH_PERFORMANCE_PROVIDERS",
     "KeywordProvider",
     "ProviderConfigurationError",
     "ProviderError",
     "ProviderNotConfiguredError",
+    "SearchEvidenceProvider",
     "SearchPerformanceProvider",
     "available_providers",
     "get_keyword_provider",
+    "get_search_evidence_provider",
     "get_search_performance_provider",
 ]
