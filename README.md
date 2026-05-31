@@ -31,6 +31,7 @@ and [`docs/providers.md`](./docs/providers.md) for the rules.
 > [Tutorial](./docs/tutorial.md) ·
 > [Recipes](./docs/recipes.md) ·
 > [How this compares](./docs/comparison.md) ·
+> [Demo clients](./docs/demo-clients.md) ·
 > [Architecture](./docs/architecture.md) ·
 > [Providers](./docs/providers.md) ·
 > [Artifacts](./docs/artifacts.md) ·

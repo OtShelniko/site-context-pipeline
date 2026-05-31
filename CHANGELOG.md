@@ -9,6 +9,19 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Second demo client (`examples/demo-ecommerce/`)** — synthetic
+  coffee-equipment storefront on `shop.example.com` with 14 pages,
+  15 internal links, deep category trees, individual product pages,
+  cart/checkout, and a small editorial blog. Exercises a different
+  IA than `demo-client`: product vs category disambiguation,
+  `commercial_urls.json` promoting category URLs to `landing`, and a
+  `*/cart/*` rule with `allow_urls` to keep specific URLs in scope.
+  New `tests/test_demo_ecommerce.py` validates classification and
+  pack-schema conformance end-to-end. New
+  [`docs/demo-clients.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/demo-clients.md)
+  documents both shipped demos and a pattern for contributing more.
+  Linked from the README, the mkdocs nav, and the docs index card
+  grid.
 - **Mypy strict mode in CI.** New `[tool.mypy]` config in
   `pyproject.toml` runs `mypy --strict` over
   `src/site_context_pipeline/` and the `lint-and-test` CI job now

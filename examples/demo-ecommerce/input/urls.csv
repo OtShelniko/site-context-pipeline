@@ -1,0 +1,15 @@
+url,title,h1,status_code,word_count,inlinks_count,outlinks_count
+https://shop.example.com/,Shop Example — Home,Welcome to Shop Example,200,210,12,18
+https://shop.example.com/category/coffee-makers/,Coffee makers,Coffee makers,200,520,9,14
+https://shop.example.com/category/coffee-makers/espresso/,Espresso machines,Espresso machines,200,480,5,11
+https://shop.example.com/category/coffee-makers/drip/,Drip coffee makers,Drip coffee makers,200,460,4,9
+https://shop.example.com/category/grinders/,Coffee grinders,Coffee grinders,200,440,7,10
+https://shop.example.com/product/blue-mountain-espresso-maker/,Blue Mountain Espresso Maker,Blue Mountain Espresso Maker,200,820,3,5
+https://shop.example.com/product/morning-glory-drip-machine/,Morning Glory Drip Machine,Morning Glory Drip Machine,200,790,2,4
+https://shop.example.com/product/burr-grinder-pro/,Burr Grinder Pro,Burr Grinder Pro,200,640,2,4
+https://shop.example.com/blog/how-to-choose-an-espresso-machine/,How to choose an espresso machine,How to choose an espresso machine,200,1380,1,5
+https://shop.example.com/blog/grind-size-matters/,Why grind size matters,Why grind size matters,200,1120,0,4
+https://shop.example.com/cart/,Cart,Your cart,200,80,4,2
+https://shop.example.com/checkout/,Checkout,Checkout,200,60,2,1
+https://shop.example.com/about/,About,About Shop Example,200,310,6,3
+https://shop.example.com/shipping/,Shipping,Shipping policy,200,420,8,2

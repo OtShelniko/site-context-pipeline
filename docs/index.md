@@ -51,6 +51,14 @@ brief or a draft.
     rolling your own script. Where this toolkit is the right answer
     and where it isn't.
 
+- :material-storefront-outline:{ .lg .middle } **[Demo clients](demo-clients.md)**
+
+    ---
+
+    Two synthetic workspaces shipped under `examples/`: a small
+    services site and a coffee-equipment storefront. Concrete
+    starting points that exercise different IAs.
+
 - :material-sitemap:{ .lg .middle } **[Architecture](architecture.md)**
 
     ---

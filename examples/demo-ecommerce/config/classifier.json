@@ -1,0 +1,18 @@
+{
+  "_comment": "E-commerce classifier rules. Priority decides ties; lower wins. `exclude_patterns` keeps category URLs out of the `landing` bucket; `allow_urls` forces specific URLs into a bucket regardless of pattern.",
+  "rules": [
+    { "page_type": "blog", "pattern": "*/blog/*", "priority": 10 },
+    { "page_type": "landing", "pattern": "*/product/*", "priority": 20 },
+    { "page_type": "category", "pattern": "*/category/*", "priority": 30 },
+    {
+      "page_type": "other",
+      "pattern": "*/cart/*",
+      "priority": 5,
+      "allow_urls": [
+        "https://shop.example.com/cart/",
+        "https://shop.example.com/checkout/"
+      ]
+    },
+    { "page_type": "service", "pattern": "*/shipping*", "priority": 40 }
+  ]
+}

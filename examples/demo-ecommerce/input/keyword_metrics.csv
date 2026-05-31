@@ -1,0 +1,8 @@
+query,avg_monthly_searches,competition,geo,language,source_url
+buy espresso machine,8200,HIGH,US,en,https://shop.example.com/category/coffee-makers/espresso/
+best burr grinder,4400,MEDIUM,US,en,https://shop.example.com/product/burr-grinder-pro/
+drip coffee maker reviews,2900,MEDIUM,US,en,https://shop.example.com/category/coffee-makers/drip/
+how to choose an espresso machine,1800,LOW,US,en,https://shop.example.com/blog/how-to-choose-an-espresso-machine/
+grind size for espresso,1200,LOW,US,en,https://shop.example.com/blog/grind-size-matters/
+shop coffee maker,3300,HIGH,US,en,https://shop.example.com/category/coffee-makers/
+free shipping coffee makers,720,MEDIUM,US,en,https://shop.example.com/shipping/
