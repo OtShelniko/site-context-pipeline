@@ -10,6 +10,7 @@ venv/
 # Build artifacts
 build/
 dist/
+_build_smoke/
 *.egg-info/
 
 # Tooling caches

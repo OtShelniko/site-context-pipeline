@@ -7,6 +7,13 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Nothing yet. See [`ROADMAP.md`](./ROADMAP.md) for what is planned.
+
+## [0.1.1] — 2026-05-31
+
+First PyPI release. Adds the sitemap XML importer; everything else from
+0.1.0 still applies.
+
 ### Added
 
 - **Sitemap XML importer** (`importers.sitemap_xml.read_sitemap`) and a
@@ -71,5 +78,6 @@ Initial public extraction.
   (e.g. `google-ads`). Core schemas, CLI verbs, and artifact field
   names stay vendor-neutral.
 
-[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.1.1
 [0.1.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.1.0

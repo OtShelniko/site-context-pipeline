@@ -27,7 +27,17 @@ def _run(argv: list[str]) -> tuple[int, dict]:
 
 
 def test_package_imports_and_has_version() -> None:
-    assert __version__ == "0.1.0"
+    """Verify the version string is set and looks like a real version.
+
+    We deliberately do NOT check for an exact value here so a routine
+    version bump in ``__init__.py`` and ``pyproject.toml`` does not
+    require editing the test suite. CI also enforces that the tag
+    matches ``pyproject.toml::project.version`` at release time.
+    """
+    import re
+
+    assert isinstance(__version__, str) and __version__
+    assert re.fullmatch(r"\d+\.\d+\.\d+(?:[.+-][\w.+-]+)?", __version__)
 
 
 def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
