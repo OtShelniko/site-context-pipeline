@@ -97,6 +97,7 @@ nav:
   - Home: index.md
   - Tutorial: tutorial.md
   - Recipes: recipes.md
+  - How this compares: comparison.md
   - Architecture: architecture.md
   - Providers: providers.md
   - Artifacts: artifacts.md
