@@ -7,6 +7,14 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Nothing yet. See [`ROADMAP.md`](./ROADMAP.md) for what is planned.
+
+## [0.2.0] — 2026-05-31
+
+Adds two input adapters: sitemap XML and Screaming Frog SEO Spider CSV.
+The toolkit now reads almost every common URL/link source format
+without a manual reshape step.
+
 ### Added
 
 - **Screaming Frog CSV importer** — `importers.screaming_frog` ships
@@ -19,6 +27,8 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   --format screaming-frog` flags. `--format auto` (the default) sniffs
   CSV headers and routes Screaming Frog exports to the SF reader
   automatically — no flag needed for canonical exports.
+- **Sitemap XML importer** (carried over from 0.1.1) —
+  `importers.sitemap_xml.read_sitemap` and `--format sitemap`.
 
 ### Changed
 
@@ -94,6 +104,7 @@ Initial public extraction.
   (e.g. `google-ads`). Core schemas, CLI verbs, and artifact field
   names stay vendor-neutral.
 
-[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.2.0
 [0.1.1]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.1.1
 [0.1.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.1.0

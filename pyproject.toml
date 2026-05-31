@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "site-context-pipeline"
-version = "0.1.1"
+version = "0.2.0"
 description = "Convert website crawls, URL inventories, and editorial notes into structured context packs for human-reviewed LLM-assisted content workflows."
 readme = "README.md"
 requires-python = ">=3.11"
