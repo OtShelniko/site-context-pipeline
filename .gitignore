@@ -20,6 +20,7 @@ site/
 .ruff_cache/
 .mypy_cache/
 .pytest_cache/
+.hypothesis/
 
 # Coverage artifacts
 .coverage

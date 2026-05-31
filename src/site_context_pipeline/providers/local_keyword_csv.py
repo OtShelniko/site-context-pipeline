@@ -182,8 +182,16 @@ def _first_int(row: dict[str, Any], names: tuple[str, ...]) -> int | None:
     if not text:
         return None
     try:
-        return int(float(text))
+        number = float(text)
     except ValueError:
+        return None
+    # `float()` happily parses "inf"/"nan"/"-inf" but `int(float(...))`
+    # raises OverflowError/ValueError for those. Treat them as missing.
+    if number != number or number in (float("inf"), float("-inf")):
+        return None
+    try:
+        return int(number)
+    except (OverflowError, ValueError):
         return None
 
 
@@ -195,9 +203,12 @@ def _first_float(row: dict[str, Any], names: tuple[str, ...]) -> float | None:
     if not text:
         return None
     try:
-        return float(text)
+        number = float(text)
     except ValueError:
         return None
+    if number != number or number in (float("inf"), float("-inf")):
+        return None
+    return number
 
 
 def _first_ratio(row: dict[str, Any], names: tuple[str, ...]) -> float | None:
@@ -214,6 +225,10 @@ def _first_ratio(row: dict[str, Any], names: tuple[str, ...]) -> float | None:
     try:
         number = float(text)
     except ValueError:
+        return None
+    # Reject NaN and infinities — `float("NAN")` parses without error
+    # but is never a valid CTR.
+    if number != number or number in (float("inf"), float("-inf")):
         return None
     if is_percent:
         return round(number / 100.0, 6)
