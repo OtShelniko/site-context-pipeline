@@ -25,6 +25,7 @@ and [`docs/providers.md`](./docs/providers.md) for the rules.
 > [Architecture](./docs/architecture.md) ·
 > [Providers](./docs/providers.md) ·
 > [Artifacts](./docs/artifacts.md) ·
+> [Classifier](./docs/classifier.md) ·
 > [Roadmap](./ROADMAP.md) ·
 > [Changelog](./CHANGELOG.md)
 
