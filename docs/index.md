@@ -74,6 +74,14 @@ brief or a draft.
     structured JSON output, exit code 1 on red findings so CI can
     gate on them.
 
+- :material-shield-check-outline:{ .lg .middle } **[JSON Schemas](schemas.md)**
+
+    ---
+
+    Public JSON Schema 2020-12 contracts for every artifact, shipped
+    with the wheel. Stable contract for LLM consumers, CI gating,
+    and code generation in any language.
+
 - :material-road:{ .lg .middle } **[Roadmap](roadmap.md)**
 
     ---

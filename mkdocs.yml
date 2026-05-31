@@ -101,6 +101,7 @@ nav:
   - Artifacts: artifacts.md
   - Classifier: classifier.md
   - QA: qa.md
+  - JSON Schemas: schemas.md
   - Roadmap: roadmap.md
   - Changelog: changelog.md
   - Contributing: contributing.md

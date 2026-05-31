@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otshelniko.github.io/site-context-pipeline/schemas/agent_context_pack.schema.json",
+  "title": "agent_context_pack.json",
+  "description": "Aggregated digest emitted by `site-context-pipeline build-context-pack`. Single human- and machine-readable artifact summarising inventory, link graph, classification reasons, keyword and search-performance signals, and search evidence. The Markdown twin (`agent_context_pack.md`) is rendered from this same dict.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "client",
+    "summary",
+    "classification",
+    "pages",
+    "opportunities",
+    "providers",
+    "sources",
+    "warnings"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Bumped only when fields are removed or renamed. New optional fields do not trigger a bump."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "client": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "page_count",
+        "page_type_counts",
+        "edge_count",
+        "node_count"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "page_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page_type_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "edge_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "node_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "keyword_metrics_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "search_performance_rows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "search_evidence_rows": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "required": [
+        "reasons"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "reasons": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "pages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array"
+      }
+    },
+    "opportunities": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "commercial_pages_low_blog_inlinks": {
+          "type": "array"
+        },
+        "blog_pages_low_inlinks": {
+          "type": "array"
+        },
+        "top_keywords": {
+          "type": "array"
+        },
+        "weak_ctr_pages": {
+          "type": "array"
+        },
+        "ranked_but_unsupported": {
+          "type": "array"
+        }
+      }
+    },
+    "search_performance_summary": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    },
+    "search_evidence": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true
+    },
+    "providers": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "project_notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
