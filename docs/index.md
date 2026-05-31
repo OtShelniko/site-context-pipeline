@@ -76,6 +76,14 @@ brief or a draft.
     `local-serp-csv`, plus the `google-ads` and
     `google-search-console` stubs).
 
+- :material-table-of-contents:{ .lg .middle } **[Provider reference](provider-reference.md)**
+
+    ---
+
+    A uniform per-provider reference: config keys, input columns,
+    failure modes, rate limits, and a worked example for each shipped
+    provider — and the template for adding your own.
+
 - :material-file-document-outline:{ .lg .middle } **[Artifacts](artifacts.md)**
 
     ---

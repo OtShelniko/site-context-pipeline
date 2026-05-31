@@ -34,6 +34,7 @@ and [`docs/providers.md`](./docs/providers.md) for the rules.
 > [Demo clients](./docs/demo-clients.md) ·
 > [Architecture](./docs/architecture.md) ·
 > [Providers](./docs/providers.md) ·
+> [Provider reference](./docs/provider-reference.md) ·
 > [Artifacts](./docs/artifacts.md) ·
 > [Classifier](./docs/classifier.md) ·
 > [QA](./docs/qa.md) ·
