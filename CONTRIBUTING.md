@@ -36,7 +36,21 @@ ruff check .
 pytest
 ```
 
-CI runs the same commands on Python 3.11.
+CI runs the same commands on Python 3.11 and 3.12, plus a coverage
+upload to Codecov from the 3.12 job.
+
+## Pre-commit (optional but recommended)
+
+The repo ships a `.pre-commit-config.yaml` that runs `ruff check --fix`,
+`ruff format`, and a few file-hygiene hooks (trailing whitespace, EOL,
+YAML/TOML syntax). Once installed, every `git commit` runs them on the
+staged files so you do not push CI-failing diffs.
+
+```bash
+pip install pre-commit
+pre-commit install                  # one-time hook install
+pre-commit run --all-files          # optional sweep before opening a PR
+```
 
 ## Filing issues
 

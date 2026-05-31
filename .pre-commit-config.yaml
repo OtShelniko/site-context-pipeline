@@ -1,0 +1,32 @@
+# Run the same lint that CI runs, locally on commit.
+#
+# Setup:
+#   pip install pre-commit
+#   pre-commit install
+#
+# After that, every `git commit` will run the hooks below on staged files.
+# To run them on the whole repo manually:
+#   pre-commit run --all-files
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Pin to the same major series CI uses; pre-commit auto-updates via
+    # `pre-commit autoupdate` when you want to bump.
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
