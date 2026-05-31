@@ -75,14 +75,15 @@ review first; LLM consumption is a side benefit.
 Requires **Python ≥ 3.11**. The core has zero runtime dependencies.
 
 ```bash
-# from a clone of this repo
-pip install -e ".[dev]"
+pip install site-context-pipeline
 ```
 
-Or, once published to PyPI:
+Or, from a clone:
 
 ```bash
-pip install site-context-pipeline
+git clone https://github.com/OtShelniko/site-context-pipeline.git
+cd site-context-pipeline
+pip install -e ".[dev]"
 ```
 
 ## Quickstart
