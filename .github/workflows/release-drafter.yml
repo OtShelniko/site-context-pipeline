@@ -1,0 +1,29 @@
+name: Release drafter
+
+on:
+  push:
+    branches:
+      - main
+  # PR-event runs are intentionally not enabled here. release-drafter
+  # requires its config file to live on the default branch, so PR runs
+  # would always fail on the PR that initially adds the config. The
+  # autolabeler will catch up the next time a push lands on `main`.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update_release_draft:
+    permissions:
+      # Needed to create the draft release.
+      contents: write
+      # Needed for the autolabeler to apply labels to PRs.
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v6
+        with:
+          config-name: release-drafter.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
