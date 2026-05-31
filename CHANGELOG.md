@@ -9,6 +9,19 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Release drafter** workflow auto-maintains a draft release on
+  every push to `main` and PR event. Categorises PRs by
+  conventional-commit prefix (`feat:` / `fix:` / `docs:` / etc.) and
+  by labels (`breaking`, `feature`, `fix`, `documentation`, ...).
+  Bumps the draft version automatically: `breaking`/`major` →
+  major, `feature`/`enhancement`/`minor` → minor, everything else →
+  patch. New `.github/workflows/release-drafter.yml` and
+  `.github/release-drafter.yml` config.
+- **`CITATION.cff`** at the repo root makes "Cite this repository"
+  appear on the GitHub project page and lets `cffconvert` render
+  BibTeX, APA, RIS, etc. New
+  [`docs/citation.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/citation.md)
+  walks through the formats. Linked from the mkdocs nav.
 - **Second demo client (`examples/demo-ecommerce/`)** — synthetic
   coffee-equipment storefront on `shop.example.com` with 14 pages,
   15 internal links, deep category trees, individual product pages,

@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software in academic work or in a public report,
+  please cite it using the metadata in this file.
+title: site-context-pipeline
+abstract: >-
+  Offline-first command-line toolkit for building structured site
+  context packs for human-reviewed, LLM-assisted content workflows.
+  Reads URL inventories, internal link graphs, keyword data, and
+  search performance signals from local files and emits a
+  deterministic JSON + Markdown digest reproducible from a single
+  workspace directory.
+type: software
+authors:
+  - name: site-context-pipeline contributors
+    website: "https://github.com/OtShelniko/site-context-pipeline/graphs/contributors"
+repository-code: "https://github.com/OtShelniko/site-context-pipeline"
+url: "https://otshelniko.github.io/site-context-pipeline/"
+license: MIT
+keywords:
+  - python
+  - cli
+  - llm
+  - seo
+  - context-engineering
+  - content-workflow
+  - search-console
+  - sitemap
+  - screaming-frog
+preferred-citation:
+  type: software
+  title: site-context-pipeline
+  authors:
+    - name: site-context-pipeline contributors
+  url: "https://github.com/OtShelniko/site-context-pipeline"

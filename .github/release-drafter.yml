@@ -1,0 +1,102 @@
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+template: |
+  ## What's changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+
+categories:
+  - title: "🚀 Features"
+    labels:
+      - "feature"
+      - "enhancement"
+  - title: "🐛 Bug fixes"
+    labels:
+      - "fix"
+      - "bug"
+      - "bugfix"
+  - title: "📚 Documentation"
+    labels:
+      - "documentation"
+      - "docs"
+  - title: "🧪 Tests"
+    labels:
+      - "test"
+      - "tests"
+  - title: "🏗️  Internal / CI"
+    labels:
+      - "ci"
+      - "chore"
+      - "internal"
+      - "refactor"
+  - title: "📦 Dependencies"
+    labels:
+      - "dependencies"
+
+# Use the conventional-commit prefix on PR titles to auto-classify when
+# no labels are set. Anything that doesn't match a category falls
+# through to the "Other" bucket below.
+autolabeler:
+  - label: "feature"
+    title:
+      - "/^feat(\\(.+\\))?:/i"
+  - label: "fix"
+    title:
+      - "/^fix(\\(.+\\))?:/i"
+  - label: "documentation"
+    title:
+      - "/^docs(\\(.+\\))?:/i"
+  - label: "test"
+    title:
+      - "/^test(\\(.+\\))?:/i"
+  - label: "ci"
+    title:
+      - "/^ci(\\(.+\\))?:/i"
+  - label: "chore"
+    title:
+      - "/^chore(\\(.+\\))?:/i"
+  - label: "refactor"
+    title:
+      - "/^refactor(\\(.+\\))?:/i"
+  - label: "dependencies"
+    title:
+      - "/^deps(\\(.+\\))?:/i"
+      - "/^build\\(deps\\):/i"
+
+change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
+change-title-escapes: '\<*_&'
+
+# Bump the draft tag automatically when a PR is labelled
+# `breaking`/`major`, `minor`, or `patch`. The default for unlabelled
+# PRs is patch.
+version-resolver:
+  major:
+    labels:
+      - "breaking"
+      - "major"
+  minor:
+    labels:
+      - "feature"
+      - "enhancement"
+      - "minor"
+  patch:
+    labels:
+      - "fix"
+      - "bug"
+      - "bugfix"
+      - "patch"
+      - "documentation"
+      - "docs"
+      - "ci"
+      - "chore"
+      - "refactor"
+      - "dependencies"
+  default: patch
+
+exclude-labels:
+  - "skip-changelog"
+  - "duplicate"
+  - "wontfix"
+  - "invalid"
