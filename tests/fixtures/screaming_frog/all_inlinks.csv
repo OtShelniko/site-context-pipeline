@@ -1,0 +1,6 @@
+"Type","Source","Destination","Size (Bytes)","Alt Text","Anchor Text","Status Code","Status","Follow","Target","Rel","Path Type","Link Position"
+"HREF","https://example.com/","https://example.com/services/","","","Services","200","OK","true","","","Absolute","Header Navigation"
+"HREF","https://example.com/","https://example.com/about/","","","About us","200","OK","true","","","Absolute","Header Navigation"
+"HREF","https://example.com/services/","https://example.com/services/local-delivery/","","","Local delivery","200","OK","true","","","Absolute","Body"
+"HREF","https://example.com/blog/how-to-plan-delivery/","https://example.com/services/local-delivery/","","","local delivery service","200","OK","true","","","Absolute","Body"
+"HREF","https://example.com/services/local-delivery/","https://example.com/","","","Home","200","OK","true","","","Absolute","Footer"

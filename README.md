@@ -167,8 +167,8 @@ without it, the command runs as a dry-run and prints the planned writes.
 | Command | What it does | Reads | Writes |
 |---|---|---|---|
 | `init` | Creates the `clients/<id>/` directory tree and seed files. | — | `clients/<id>/{input,config,data,output,logs}/`, `input/{urls.csv,links.csv,project.md}` placeholders |
-| `build-inventory --source PATH` | Normalises URLs, classifies each as `home`/`service`/`blog`/`category`/`landing`/`other`, records the rule that fired. Accepts CSV, JSON, or sitemap XML via `--format auto|csv|json|sitemap`. | CSV, JSON, or sitemap.xml URL list | `data/content_inventory.json` |
-| `build-link-graph --source PATH` | Joins an edge list with the inventory; tags commercial pages with low blog inlinks. | CSV or JSON edge list | `data/internal_link_graph.json` |
+| `build-inventory --source PATH` | Normalises URLs, classifies each as `home`/`service`/`blog`/`category`/`landing`/`other`, records the rule that fired. Accepts CSV, JSON, sitemap XML, or Screaming Frog `internal_*.csv` via `--format auto\|csv\|json\|sitemap\|screaming-frog`. | CSV, JSON, sitemap.xml, or Screaming Frog inventory CSV | `data/content_inventory.json` |
+| `build-link-graph --source PATH` | Joins an edge list with the inventory; tags commercial pages with low blog inlinks. Accepts CSV, JSON, or Screaming Frog `all_inlinks.csv` via `--format`. | CSV, JSON, or Screaming Frog link CSV | `data/internal_link_graph.json` |
 | `import-keywords --provider NAME --source PATH` | Reads keyword metrics from a provider into a normalised artifact. | provider-specific | `data/keyword_metrics.json` |
 | `import-search-performance --provider NAME --source PATH` | Reads per-query performance data into a normalised artifact. | provider-specific | `data/search_performance.json` |
 | `list-providers` | Lists available keyword and search-performance providers and whether each is live in this release. | — | nothing |

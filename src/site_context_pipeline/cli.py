@@ -112,19 +112,34 @@ def _build_parser() -> argparse.ArgumentParser:
         "--format",
         dest="source_format",
         default="auto",
-        choices=["auto", "csv", "json", "sitemap"],
-        help="Force a particular reader; default 'auto' picks by file extension.",
+        choices=["auto", "csv", "json", "sitemap", "screaming-frog"],
+        help=(
+            "Force a particular reader; default 'auto' picks by file "
+            "extension and header sniffing (Screaming Frog inventory CSVs "
+            "are auto-detected)."
+        ),
     )
 
     lnk = sub.add_parser(
         "build-link-graph",
         parents=[common_client],
-        help="Build internal_link_graph.json from a CSV or JSON edge list",
+        help="Build internal_link_graph.json from a CSV / JSON / Screaming Frog edge list",
     )
     lnk.add_argument(
         "--source",
         default=None,
         help="Path to a CSV or JSON edge list (defaults to <client>/input/links.csv)",
+    )
+    lnk.add_argument(
+        "--format",
+        dest="source_format",
+        default="auto",
+        choices=["auto", "csv", "json", "screaming-frog"],
+        help=(
+            "Force a particular reader; default 'auto' picks by file "
+            "extension and header sniffing (Screaming Frog all_inlinks.csv "
+            "is auto-detected)."
+        ),
     )
 
     sub.add_parser(
@@ -210,7 +225,12 @@ def _run_build_inventory(paths: ClientPaths, args: argparse.Namespace) -> dict[s
 
 
 def _run_build_link_graph(paths: ClientPaths, args: argparse.Namespace) -> dict[str, Any]:
-    data = build_link_graph(paths, write=args.write, source=args.source)
+    data = build_link_graph(
+        paths,
+        write=args.write,
+        source=args.source,
+        source_format=getattr(args, "source_format", None),
+    )
     return _result_from_data(paths, "build-link-graph", write=args.write, data=data)
 
 
