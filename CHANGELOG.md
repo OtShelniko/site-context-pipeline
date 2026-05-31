@@ -7,59 +7,72 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Nothing yet. See [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md) for what is planned.
+
+## [0.4.0] — 2026-06-01
+
+A maturity release: the project graduates to **Beta**. No breaking
+changes to the existing pipeline — this release adds a public JSON
+Schema contract, two more demo clients, property-based tests,
+`mypy --strict` in CI, a hosted docs site, and release tooling.
+
+### Changed
+
+- **Development status promoted from Alpha to Beta** in the package
+  classifiers. The core pipeline, artifact schemas, and CLI verbs are
+  stable; vendor-specific live adapters remain the only roadmap work.
+
 ### Added
 
-- **Third demo client (`examples/demo-multilingual/`)** — synthetic
-  three-language docs site for a fictional SaaS "TaskFlow" on
-  `docs.example.org`. 14 pages across locale-prefixed trees
-  (`/en/`, `/de/`, `/fr/`), 12 internal links including the language
-  switcher, the same logical page type expressed through localized
-  slugs (`pricing` ≡ `preise` ≡ `tarifs`; `guides` ≡ `anleitungen`),
-  and keyword/Search-Console rows spanning three markets with
-  distinct `geo` / `language` / `locale` values. Demonstrates that
-  the language-neutral core classifies on URL structure alone and
-  carries market metadata through untouched. New
-  `tests/test_demo_multilingual.py` (3 tests) validates the
-  localized-slug classification and per-market metadata preservation.
-  `docs/demo-clients.md` documents the demo; test count 168 → 171.
-- **Release drafter** workflow auto-maintains a draft release on
-  every push to `main` and PR event. Categorises PRs by
-  conventional-commit prefix (`feat:` / `fix:` / `docs:` / etc.) and
-  by labels (`breaking`, `feature`, `fix`, `documentation`, ...).
-  Bumps the draft version automatically: `breaking`/`major` →
-  major, `feature`/`enhancement`/`minor` → minor, everything else →
-  patch. New `.github/workflows/release-drafter.yml` and
-  `.github/release-drafter.yml` config.
-- **`CITATION.cff`** at the repo root makes "Cite this repository"
-  appear on the GitHub project page and lets `cffconvert` render
-  BibTeX, APA, RIS, etc. New
-  [`docs/citation.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/citation.md)
-  walks through the formats. Linked from the mkdocs nav.
-- **Second demo client (`examples/demo-ecommerce/`)** — synthetic
-  coffee-equipment storefront on `shop.example.com` with 14 pages,
-  15 internal links, deep category trees, individual product pages,
-  cart/checkout, and a small editorial blog. Exercises a different
-  IA than `demo-client`: product vs category disambiguation,
-  `commercial_urls.json` promoting category URLs to `landing`, and a
-  `*/cart/*` rule with `allow_urls` to keep specific URLs in scope.
-  New `tests/test_demo_ecommerce.py` validates classification and
-  pack-schema conformance end-to-end. New
-  [`docs/demo-clients.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/demo-clients.md)
-  documents both shipped demos and a pattern for contributing more.
-  Linked from the README, the mkdocs nav, and the docs index card
-  grid.
-- **Mypy strict mode in CI.** New `[tool.mypy]` config in
-  `pyproject.toml` runs `mypy --strict` over
-  `src/site_context_pipeline/` and the `lint-and-test` CI job now
-  invokes it on every push and pull request. `mypy>=1.11` joined the
-  `[dev]` extra. Strict mode is clean on all 22 source files.
+- **Public JSON Schemas for every artifact.** New
+  `site_context_pipeline.json_schema` subpackage ships six JSON
+  Schema 2020-12 documents
+  (`content_inventory`, `internal_link_graph`, `keyword_metrics`,
+  `search_performance`, `search_evidence`, `agent_context_pack`)
+  alongside a tiny stdlib loader (`list_schemas`, `load_schema`,
+  `schema_filename`). The base install still has zero runtime
+  dependencies. New `docs/schemas.md` documents the loader API,
+  cross-schema reference resolution, CI gating with
+  `check-jsonschema`, and code-gen recipes. Schemas are validated
+  end-to-end against real artifacts in `tests/test_json_schemas.py`
+  using `jsonschema` (dev extra).
+- **Hosted documentation site** built with MkDocs Material and
+  deployed to GitHub Pages
+  (<https://otshelniko.github.io/site-context-pipeline/>). New
+  `[docs]` extra pins `mkdocs`, `mkdocs-material`, and
+  `pymdown-extensions`; a `docs.yml` workflow builds on every PR
+  (strict mode) and deploys on push to `main`.
+- **Three demo clients.** `examples/demo-client/` (small services
+  site, carried over), `examples/demo-ecommerce/` (coffee-equipment
+  storefront with deep category trees, product pages, cart/checkout),
+  and `examples/demo-multilingual/` (three-language docs site with
+  locale-prefixed trees and localized slugs). New
+  `docs/demo-clients.md` documents all three;
+  `tests/test_demo_ecommerce.py` and
+  `tests/test_demo_multilingual.py` validate them end-to-end.
 - **Property-based tests with Hypothesis.** New
   `tests/test_property_based.py` adds 19 property tests covering URL
   normalisation, glob-style path matching, CSV header normalisation,
-  integer/float/CTR parsing, and `classify_url`. Each test asserts
-  invariants over randomly-generated inputs rather than concrete
-  values. `hypothesis>=6.100` joined the `[dev]` extra. Test count
-  rose from 147 to 166.
+  integer/float/CTR parsing, and `classify_url`. `hypothesis>=6.100`
+  joined the `[dev]` extra.
+- **Mypy strict mode in CI.** New `[tool.mypy]` config runs
+  `mypy --strict` over `src/site_context_pipeline/`; the
+  `lint-and-test` CI job invokes it on every push and pull request.
+  `mypy>=1.11` joined the `[dev]` extra. Clean on all 22 source files.
+- **Documentation suite expansion** — new `docs/recipes.md` (nine
+  end-to-end workflows), `docs/comparison.md` (honest comparison vs
+  Screaming Frog, Sitebulb, ContentKing, Ahrefs/Semrush), and
+  `docs/citation.md` (citation formats).
+- **OSS housekeeping** — CodeQL security scanning, Dependabot for
+  GitHub Actions and pip dev extras, a pre-commit config mirroring
+  the CI lint, coverage via `pytest-cov` uploaded to Codecov, a
+  `py.typed` marker, expanded PyPI metadata (Project-URLs,
+  classifiers, keywords), README badges (PyPI version, Python
+  versions, downloads, license, Codecov), and a `CITATION.cff` with
+  the GitHub "Cite this repository" integration.
+- **Release tooling** — a release-drafter workflow that
+  auto-maintains a draft GitHub release, categorising PRs by
+  conventional-commit prefix and label.
 
 ### Fixed
 
@@ -72,37 +85,13 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   All three were latent bugs surfaced by Hypothesis; example-based
   tests had not exercised those inputs.
 
-- **"How this compares" doc** — new
-  [`docs/comparison.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/comparison.md)
-  is an honest, opinionated comparison vs Screaming Frog, Sitebulb,
-  ContentKing, Ahrefs/Semrush, and rolling-your-own scripts.
-  Includes a capability matrix, where this toolkit is and isn't the
-  right answer, common combinations (SF → this; GSC export → this;
-  Ahrefs/Semrush export → this), and a "why not just write a
-  script" section. Linked from the README, the mkdocs nav, and the
-  index card grid.
-- **Recipes documentation** — new
-  [`docs/recipes.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/recipes.md)
-  ships nine end-to-end workflows that show the toolkit in real use:
-  onboarding a new site, quarterly audits, finding blog posts that
-  should be services, pre-rebrand link-graph snapshots, gating
-  drafts in CI, handing the pack to an LLM with citations,
-  side-by-side client comparison, classifier coverage audits, and
-  running inside Docker. Linked from the README, the mkdocs nav, and
-  the docs index card grid. No code changes.
-- **Public JSON Schemas for every artifact.** New
-  `site_context_pipeline.json_schema` subpackage ships six JSON
-  Schema 2020-12 documents
-  (`content_inventory`, `internal_link_graph`, `keyword_metrics`,
-  `search_performance`, `search_evidence`, `agent_context_pack`)
-  alongside a tiny stdlib loader (`list_schemas`, `load_schema`,
-  `schema_filename`). The base install still has zero runtime
-  dependencies. New `docs/schemas.md` documents the loader API,
-  cross-schema reference resolution, CI gating with
-  `check-jsonschema`, and code-gen recipes. Schemas are validated
-  end-to-end against real artifacts in `tests/test_json_schemas.py`
-  using `jsonschema` (dev extra). See
-  [`docs/schemas.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/schemas.md).
+### Internal
+
+- Tightened type annotations across `link_graph.py`, the CSV-based
+  providers, the Screaming Frog importer, and the schema loader so
+  `mypy --strict` passes with no `Any` leakage. No public API or
+  artifact-schema changes (`schema_version` stays at `1`).
+- Test count grew from 139 to 171.
 
 ## [0.3.0] — 2026-05-31
 
@@ -250,7 +239,8 @@ Initial public extraction.
   (e.g. `google-ads`). Core schemas, CLI verbs, and artifact field
   names stay vendor-neutral.
 
-[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.4.0
 [0.3.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.3.0
 [0.2.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.2.0
 [0.1.1]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.1.1
