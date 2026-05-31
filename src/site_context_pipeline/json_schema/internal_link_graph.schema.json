@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otshelniko.github.io/site-context-pipeline/schemas/internal_link_graph.schema.json",
+  "title": "internal_link_graph.json",
+  "description": "Internal link graph emitted by `site-context-pipeline build-link-graph`. Joins inventory metadata onto every node and surfaces a few static opportunity views.",
+  "type": "object",
+  "required": [
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/LinkNode"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/LinkEdge"
+      }
+    },
+    "commercial_pages_low_blog_inlinks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "blog_pages_low_inlinks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "LinkNode": {
+      "type": "object",
+      "required": [
+        "url",
+        "page_type"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "page_type": {
+          "$ref": "content_inventory.schema.json#/$defs/PageType"
+        },
+        "inlink_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outlink_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blog_inlink_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "is_commercial_target": {
+          "type": "boolean"
+        }
+      }
+    },
+    "LinkEdge": {
+      "type": "object",
+      "required": [
+        "source_url",
+        "target_url"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "target_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "anchor_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

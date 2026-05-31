@@ -7,7 +7,21 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet. See [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md) for what is planned.
+### Added
+
+- **Public JSON Schemas for every artifact.** New
+  `site_context_pipeline.json_schema` subpackage ships six JSON
+  Schema 2020-12 documents
+  (`content_inventory`, `internal_link_graph`, `keyword_metrics`,
+  `search_performance`, `search_evidence`, `agent_context_pack`)
+  alongside a tiny stdlib loader (`list_schemas`, `load_schema`,
+  `schema_filename`). The base install still has zero runtime
+  dependencies. New `docs/schemas.md` documents the loader API,
+  cross-schema reference resolution, CI gating with
+  `check-jsonschema`, and code-gen recipes. Schemas are validated
+  end-to-end against real artifacts in `tests/test_json_schemas.py`
+  using `jsonschema` (dev extra). See
+  [`docs/schemas.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/schemas.md).
 
 ## [0.3.0] — 2026-05-31
 

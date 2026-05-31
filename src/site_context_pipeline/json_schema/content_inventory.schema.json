@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otshelniko.github.io/site-context-pipeline/schemas/content_inventory.schema.json",
+  "title": "content_inventory.json",
+  "description": "Normalised list of pages emitted by `site-context-pipeline build-inventory`. One object per URL.",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/InventoryItem"
+  },
+  "$defs": {
+    "PageType": {
+      "type": "string",
+      "enum": [
+        "home",
+        "service",
+        "blog",
+        "category",
+        "landing",
+        "other"
+      ]
+    },
+    "InventoryItem": {
+      "type": "object",
+      "required": [
+        "url",
+        "path",
+        "page_type",
+        "classification_reason"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Canonical, normalised URL of the page."
+        },
+        "path": {
+          "type": "string",
+          "description": "Path component of the URL, including leading slash."
+        },
+        "page_type": {
+          "$ref": "#/$defs/PageType"
+        },
+        "classification_reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Token explaining which classifier rule matched (e.g. `matched_pattern:*/blog/*`, `matched_home_path`, `fallback_other`)."
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "h1": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_code": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 100,
+          "maximum": 599
+        },
+        "word_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "inlinks_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "outlinks_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "source": {
+          "type": "string",
+          "description": "Importer that produced this row (e.g. `csv`, `json`, `sitemap`, `screaming-frog`)."
+        }
+      }
+    }
+  }
+}

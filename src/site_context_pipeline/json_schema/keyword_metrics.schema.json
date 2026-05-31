@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otshelniko.github.io/site-context-pipeline/schemas/keyword_metrics.schema.json",
+  "title": "keyword_metrics.json",
+  "description": "Keyword demand artifact produced by `site-context-pipeline import-keywords`. The provider envelope is identical to `search_performance.json`; the difference is which fields each row populates.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "provider",
+    "items_count",
+    "items"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "items_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/KeywordMetric"
+      }
+    }
+  },
+  "$defs": {
+    "KeywordMetric": {
+      "type": "object",
+      "required": [
+        "query",
+        "source"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "geo": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "avg_monthly_searches": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "impressions": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "clicks": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "ctr": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "position": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "competition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

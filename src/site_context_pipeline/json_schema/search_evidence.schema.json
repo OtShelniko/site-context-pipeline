@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otshelniko.github.io/site-context-pipeline/schemas/search_evidence.schema.json",
+  "title": "search_evidence.json",
+  "description": "Hand-curated SERP evidence artifact produced by `site-context-pipeline import-search-evidence`.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "provider",
+    "items_count",
+    "items"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "items_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SearchEvidence"
+      }
+    }
+  },
+  "$defs": {
+    "SearchEvidence": {
+      "type": "object",
+      "required": [
+        "query",
+        "source"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "snippet": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "page_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

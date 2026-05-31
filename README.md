@@ -34,6 +34,7 @@ and [`docs/providers.md`](./docs/providers.md) for the rules.
 > [Artifacts](./docs/artifacts.md) ·
 > [Classifier](./docs/classifier.md) ·
 > [QA](./docs/qa.md) ·
+> [JSON Schemas](./docs/schemas.md) ·
 > [Roadmap](./ROADMAP.md) ·
 > [Changelog](./CHANGELOG.md) also viewable here on GitHub.
 

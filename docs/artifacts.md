@@ -4,6 +4,12 @@ This document describes every file the pipeline reads and writes under
 a client workspace, when each is generated, what it is for, and whether
 the rest of the pipeline depends on it.
 
+> **Schemas.** Every JSON artifact described below has a public
+> [JSON Schema 2020-12](https://json-schema.org/draft/2020-12/schema)
+> contract shipped with the wheel. See
+> [JSON Schemas](schemas.md) for the loader API, validation
+> recipes, and versioning rules.
+
 ## Workspace layout
 
 ```
