@@ -18,6 +18,12 @@ _build_smoke/
 .mypy_cache/
 .pytest_cache/
 
+# Coverage artifacts
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
 # OS
 Thumbs.db
 .DS_Store

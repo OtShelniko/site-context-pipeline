@@ -5,6 +5,7 @@
 > workflows.
 
 [![CI](https://github.com/OtShelniko/site-context-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/OtShelniko/site-context-pipeline/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/OtShelniko/site-context-pipeline/graph/badge.svg)](https://codecov.io/gh/OtShelniko/site-context-pipeline)
 [![PyPI](https://img.shields.io/pypi/v/site-context-pipeline.svg)](https://pypi.org/project/site-context-pipeline/)
 [![Python versions](https://img.shields.io/pypi/pyversions/site-context-pipeline.svg)](https://pypi.org/project/site-context-pipeline/)
 [![Downloads](https://static.pepy.tech/badge/site-context-pipeline/month)](https://pepy.tech/project/site-context-pipeline)

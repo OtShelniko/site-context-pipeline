@@ -12,10 +12,17 @@ license = { file = "LICENSE" }
 keywords = [
     "content",
     "context",
+    "context-engineering",
+    "content-workflow",
     "llm",
     "seo",
     "site-audit",
+    "site-context",
     "knowledge-base",
+    "search-console",
+    "sitemap",
+    "screaming-frog",
+    "cli",
 ]
 authors = [
     { name = "site-context-pipeline contributors" },
@@ -24,14 +31,21 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Text Processing :: Markup",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "Topic :: Utilities",
+    "Typing :: Typed",
 ]
 # Standard library only for the core. Optional adapters that touch the
 # network live behind extras and are not implemented in 0.1.
@@ -40,12 +54,17 @@ dependencies = []
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
+    "pytest-cov>=5.0",
     "ruff>=0.5",
 ]
 
 [project.urls]
 Homepage = "https://github.com/OtShelniko/site-context-pipeline"
+Documentation = "https://github.com/OtShelniko/site-context-pipeline#documentation"
+Repository = "https://github.com/OtShelniko/site-context-pipeline"
 Issues = "https://github.com/OtShelniko/site-context-pipeline/issues"
+Changelog = "https://github.com/OtShelniko/site-context-pipeline/blob/main/CHANGELOG.md"
+Roadmap = "https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md"
 
 [project.scripts]
 site-context-pipeline = "site_context_pipeline.cli:main"
@@ -90,3 +109,21 @@ ignore = [
 minversion = "8.0"
 addopts = "-q"
 testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/site_context_pipeline"]
+omit = [
+    "tests/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+precision = 1
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
