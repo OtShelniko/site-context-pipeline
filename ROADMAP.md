@@ -68,7 +68,8 @@ provide deterministic checks over Markdown drafts.
 - **Local SERP evidence CSV importer** ✅ *(merged in `Unreleased`)* —
   read top-N organic rows for a query from a hand-curated CSV. No
   live SERP scraping.
-- **Deterministic content QA module** — offline checks over a Markdown
+- **Deterministic content QA module** ✅ *(merged in `Unreleased`)* —
+  offline checks over a Markdown
   draft (keyphrase distribution, internal-link sanity, slug shape,
   heading hierarchy, missing alt text). No LLM involvement.
 

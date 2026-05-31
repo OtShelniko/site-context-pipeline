@@ -9,6 +9,20 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Deterministic content QA module** (#5) — new `site_context_pipeline.qa`
+  module exposes `analyse_draft` / `analyse_draft_file` plus the
+  `QAReport` and `QAFinding` dataclasses. Nine checks ship in 0.x:
+  `single_h1`, `heading_hierarchy`, `keyphrase_in_h1`,
+  `keyphrase_density`, `intro_length`, `competing_anchors`,
+  `image_alt`, `links_resolve`, `slug_keyphrase`. No LLM involvement;
+  every rule is regex + stdlib so the output is reproducible offline.
+- **CLI verb `qa-draft`** — reads a Markdown draft and the client's
+  `content_inventory.json` (when present) and prints a structured
+  JSON report. Returns exit code 1 when any finding is red so CI
+  gates can use it. With `--write`, persists the report to
+  `<client>/output/qa_reports/<slug>.qa.json`.
+- Documentation: [`docs/qa.md`](./docs/qa.md) describes every check,
+  the JSON shape, the library API, and how to add a new rule.
 - **Search-evidence provider interface** (#3) — `providers.base`
   finalises the `SearchEvidenceProvider` abstract base; the registry
   exposes a third map (`SEARCH_EVIDENCE_PROVIDERS`) and matching

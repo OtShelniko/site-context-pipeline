@@ -26,6 +26,7 @@ and [`docs/providers.md`](./docs/providers.md) for the rules.
 > [Providers](./docs/providers.md) ·
 > [Artifacts](./docs/artifacts.md) ·
 > [Classifier](./docs/classifier.md) ·
+> [QA](./docs/qa.md) ·
 > [Roadmap](./ROADMAP.md) ·
 > [Changelog](./CHANGELOG.md)
 
@@ -174,6 +175,7 @@ without it, the command runs as a dry-run and prints the planned writes.
 | `import-search-performance --provider NAME --source PATH` | Reads per-query performance data into a normalised artifact. | provider-specific | `data/search_performance.json` |
 | `list-providers` | Lists available keyword and search-performance providers and whether each is live in this release. | — | nothing |
 | `build-context-pack` | Aggregates inventory, link graph, project notes, keywords, and performance into one digest. No LLM, no network. | The JSON artifacts above + project notes | `output/agent_context_pack.json`, `output/agent_context_pack.md`, `output/content_opportunities.md` |
+| `qa-draft --draft PATH` | Runs deterministic QA checks over a Markdown draft (heading hierarchy, keyphrase density, alt text, link sanity, slug). Exits non-zero on any red finding so CI can gate on it. | Markdown draft + (optional) inventory | `output/qa_reports/<slug>.qa.json` (with `--write`) |
 | `inspect` | Reports which expected files exist. Useful for CI scripts. | The whole workspace | nothing |
 
 All commands print one JSON document on stdout, so you can pipe them.
