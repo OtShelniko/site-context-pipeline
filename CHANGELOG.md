@@ -7,7 +7,7 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet. See [`ROADMAP.md`](./ROADMAP.md) for what is planned.
+Nothing yet. See [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md) for what is planned.
 
 ## [0.3.0] — 2026-05-31
 
@@ -29,7 +29,7 @@ rules, and the first search-evidence provider — closing every
   JSON report. Returns exit code 1 when any finding is red so CI
   gates can use it. With `--write`, persists the report to
   `<client>/output/qa_reports/<slug>.qa.json`.
-- Documentation: [`docs/qa.md`](./docs/qa.md) describes every check,
+- Documentation: [`docs/qa.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/qa.md) describes every check,
   the JSON shape, the library API, and how to add a new rule.
 - **Search-evidence provider interface** (#3) — `providers.base`
   finalises the `SearchEvidenceProvider` abstract base; the registry
@@ -57,7 +57,7 @@ rules, and the first search-evidence provider — closing every
 - New module: `inventory.ClassifierRule` dataclass; `classify_url`
   accepts both `ClassifierRule` instances and legacy
   `(page_type, pattern)` tuples for back-compat.
-- Documentation: [`docs/classifier.md`](./docs/classifier.md)
+- Documentation: [`docs/classifier.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/classifier.md)
   describes the schema, resolution order, and warning tokens.
 
 ## [0.2.0] — 2026-05-31

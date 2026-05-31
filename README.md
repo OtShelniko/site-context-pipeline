@@ -26,14 +26,16 @@ adapters may carry vendor-specific names (e.g. `google-ads`,
 `google-search-console`) — see [Provider philosophy](#provider-philosophy)
 and [`docs/providers.md`](./docs/providers.md) for the rules.
 
-> **Documentation:** [Tutorial](./docs/tutorial.md) ·
+> **Documentation:** the full docs site lives at
+> **<https://otshelniko.github.io/site-context-pipeline/>**, with
+> [Tutorial](./docs/tutorial.md) ·
 > [Architecture](./docs/architecture.md) ·
 > [Providers](./docs/providers.md) ·
 > [Artifacts](./docs/artifacts.md) ·
 > [Classifier](./docs/classifier.md) ·
 > [QA](./docs/qa.md) ·
 > [Roadmap](./ROADMAP.md) ·
-> [Changelog](./CHANGELOG.md)
+> [Changelog](./CHANGELOG.md) also viewable here on GitHub.
 
 ## What you get out
 

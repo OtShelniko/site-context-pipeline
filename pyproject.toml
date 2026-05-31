@@ -57,10 +57,15 @@ dev = [
     "pytest-cov>=5.0",
     "ruff>=0.5",
 ]
+docs = [
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5",
+    "pymdown-extensions>=10.7",
+]
 
 [project.urls]
 Homepage = "https://github.com/OtShelniko/site-context-pipeline"
-Documentation = "https://github.com/OtShelniko/site-context-pipeline#documentation"
+Documentation = "https://otshelniko.github.io/site-context-pipeline/"
 Repository = "https://github.com/OtShelniko/site-context-pipeline"
 Issues = "https://github.com/OtShelniko/site-context-pipeline/issues"
 Changelog = "https://github.com/OtShelniko/site-context-pipeline/blob/main/CHANGELOG.md"
