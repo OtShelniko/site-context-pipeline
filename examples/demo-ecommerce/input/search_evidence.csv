@@ -1,0 +1,10 @@
+query,rank,title,url,snippet,page_type
+buy espresso machine,1,Best Espresso Machines 2026,https://retailer-a.example/espresso-machines,Editor's picks for home espresso,category
+buy espresso machine,2,Buy Espresso Maker Online,https://retailer-b.example/shop/espresso,Free shipping on orders over $99,category
+buy espresso machine,3,Espresso Machine Buyer's Guide,https://retailer-c.example/blog/espresso-guide,How to pick the right model,article
+best burr grinder,1,Top 10 Burr Grinders Reviewed,https://retailer-a.example/blog/burr-grinder-reviews,Side-by-side test of 10 popular grinders,article
+best burr grinder,2,Burr Grinder Comparison Tool,https://retailer-b.example/tools/grinder-compare,Compare specs across 30 grinders,calculator
+how to choose an espresso machine,1,Espresso Machine Buying Guide,https://retailer-c.example/blog/espresso-guide,Pump vs lever vs super-automatic,article
+how to choose an espresso machine,2,How To Pick an Espresso Maker,https://retailer-d.example/blog/pick-espresso-maker,Practical advice for first-time buyers,article
+shop coffee maker,1,Shop All Coffee Makers,https://retailer-a.example/coffee-makers,Filter by brewing method and price,category
+shop coffee maker,2,Coffee Maker Sale,https://retailer-b.example/sale/coffee-makers,Up to 40% off select models,landing

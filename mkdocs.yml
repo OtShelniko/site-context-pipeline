@@ -98,6 +98,7 @@ nav:
   - Tutorial: tutorial.md
   - Recipes: recipes.md
   - How this compares: comparison.md
+  - Demo clients: demo-clients.md
   - Architecture: architecture.md
   - Providers: providers.md
   - Artifacts: artifacts.md

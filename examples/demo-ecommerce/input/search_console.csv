@@ -1,0 +1,8 @@
+query,page,clicks,impressions,ctr,position,country,device,date
+buy espresso machine,https://shop.example.com/category/coffee-makers/espresso/,142,5400,2.63%,8.4,USA,DESKTOP,2026-04
+best burr grinder,https://shop.example.com/product/burr-grinder-pro/,71,2800,2.54%,11.2,USA,DESKTOP,2026-04
+drip coffee maker reviews,https://shop.example.com/category/coffee-makers/drip/,29,2100,1.38%,15.7,USA,DESKTOP,2026-04
+how to choose an espresso machine,https://shop.example.com/blog/how-to-choose-an-espresso-machine/,58,1450,4.00%,7.1,USA,MOBILE,2026-04
+grind size for espresso,https://shop.example.com/blog/grind-size-matters/,12,890,1.35%,18.4,USA,DESKTOP,2026-04
+shop coffee maker,https://shop.example.com/category/coffee-makers/,93,2200,4.23%,6.8,USA,DESKTOP,2026-04
+free shipping coffee makers,https://shop.example.com/shipping/,4,510,0.78%,24.1,USA,MOBILE,2026-04

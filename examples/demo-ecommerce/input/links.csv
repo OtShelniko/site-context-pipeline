@@ -1,0 +1,16 @@
+source_url,target_url,anchor_text
+https://shop.example.com/,https://shop.example.com/category/coffee-makers/,Shop coffee makers
+https://shop.example.com/,https://shop.example.com/category/grinders/,Shop grinders
+https://shop.example.com/,https://shop.example.com/about/,About us
+https://shop.example.com/category/coffee-makers/,https://shop.example.com/category/coffee-makers/espresso/,Espresso machines
+https://shop.example.com/category/coffee-makers/,https://shop.example.com/category/coffee-makers/drip/,Drip coffee makers
+https://shop.example.com/category/coffee-makers/espresso/,https://shop.example.com/product/blue-mountain-espresso-maker/,Blue Mountain Espresso Maker
+https://shop.example.com/category/coffee-makers/drip/,https://shop.example.com/product/morning-glory-drip-machine/,Morning Glory Drip Machine
+https://shop.example.com/category/grinders/,https://shop.example.com/product/burr-grinder-pro/,Burr Grinder Pro
+https://shop.example.com/blog/how-to-choose-an-espresso-machine/,https://shop.example.com/category/coffee-makers/espresso/,browse espresso machines
+https://shop.example.com/blog/how-to-choose-an-espresso-machine/,https://shop.example.com/product/blue-mountain-espresso-maker/,Blue Mountain Espresso Maker review
+https://shop.example.com/product/blue-mountain-espresso-maker/,https://shop.example.com/cart/,Add to cart
+https://shop.example.com/product/morning-glory-drip-machine/,https://shop.example.com/cart/,Add to cart
+https://shop.example.com/product/burr-grinder-pro/,https://shop.example.com/cart/,Add to cart
+https://shop.example.com/cart/,https://shop.example.com/checkout/,Checkout
+https://shop.example.com/about/,https://shop.example.com/shipping/,Read shipping policy
