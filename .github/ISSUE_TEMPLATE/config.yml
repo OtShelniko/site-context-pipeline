@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/OtShelniko/site-context-pipeline/discussions
+    about: Open a discussion thread for general questions, ideas, or feedback.
+  - name: Security report
+    url: https://github.com/OtShelniko/site-context-pipeline/blob/main/SECURITY.md
+    about: Please follow SECURITY.md for security-sensitive reports.

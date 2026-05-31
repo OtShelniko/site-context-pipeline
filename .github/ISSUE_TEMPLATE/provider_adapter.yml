@@ -1,0 +1,70 @@
+name: New provider adapter
+description: Propose a new keyword, search-performance, or search-evidence provider.
+title: "provider: "
+labels: ["provider", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Providers are how external data enters the pipeline. Before filing,
+        please read [`docs/providers.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/providers.md).
+        New providers must follow the safety rules listed there:
+        no credentials in repo, no required SDKs in base install, no live
+        network calls in tests, structured `not_configured` result when
+        config is missing.
+  - type: input
+    id: slug
+    attributes:
+      label: Provider slug
+      description: Lowercase, hyphen-separated. Vendor-specific is fine for adapters (e.g. `dataforseo-keywords`).
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Provider kind
+      options:
+        - keyword
+        - search_performance
+        - search_evidence
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Data source
+      description: Vendor name, file format, or both (e.g. "DataForSEO Keywords API", "Yandex Wordstat live", "local Ahrefs CSV export").
+    validations:
+      required: true
+  - type: dropdown
+    id: live
+    attributes:
+      label: Live or local-file
+      options:
+        - local-file (offline)
+        - live API (needs optional extra)
+    validations:
+      required: true
+  - type: textarea
+    id: schema
+    attributes:
+      label: Field mapping
+      description: |
+        How will source rows map onto the toolkit's `KeywordMetric` /
+        `SearchEvidence` fields? List each source field next to the toolkit
+        field it populates. Keep `raw` for everything else.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Optional dependencies
+      description: |
+        For live adapters, list the third-party packages the optional extra
+        will pull in (e.g. `google-api-python-client`). Local-file adapters
+        should not need any.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Rate limits, auth flow, anything reviewers should know.

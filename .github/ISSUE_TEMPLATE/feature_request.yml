@@ -1,0 +1,50 @@
+name: Feature request
+description: Suggest a new capability that fits the project's scope.
+title: "feature: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening a feature request, please skim
+        [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md).
+        Items already on the roadmap usually do not need a separate issue;
+        comment on the existing one instead.
+
+        Out-of-scope categories (please do not file these):
+          - Built-in "write me an article" commands.
+          - Bulk content generation across many sites in one run.
+          - Live crawling or scraping in the core.
+          - Hardcoded support for a single search vendor.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user pain does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What would the change look like? CLI verb, artifact field, provider, doc?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      multiple: false
+      options:
+        - core (CLI, schema, context pack)
+        - provider adapter
+        - importer / CSV / sitemap
+        - documentation
+        - tests / CI
+        - other
+    validations:
+      required: true
