@@ -60,11 +60,13 @@ def build_link_graph(
     inventory_path = paths.data / "content_inventory.json"
     inventory_raw = read_json(inventory_path, [])
     inventory = inventory_raw if isinstance(inventory_raw, list) else []
-    inventory_by_url = {
-        item.get("url"): item
-        for item in inventory
-        if isinstance(item, dict) and item.get("url")
-    }
+    inventory_by_url: dict[str, dict[str, Any]] = {}
+    for item in inventory:
+        if not isinstance(item, dict):
+            continue
+        url_value = item.get("url")
+        if isinstance(url_value, str) and url_value:
+            inventory_by_url[url_value] = item
 
     source_path = _resolve_source(source, paths)
     edge_rows, detected_format, parse_warnings = _read_source(source_path, source_format)
@@ -91,17 +93,19 @@ def build_link_graph(
         page_type = str(item.get("page_type") or "other")
         explicit_inlinks = len(inlinks[url])
         explicit_outlinks = len(outlinks[url])
-        fallback_inlinks = item.get("inlinks_count")
-        fallback_outlinks = item.get("outlinks_count")
+        fallback_inlinks = _int_or_zero(item.get("inlinks_count"))
+        fallback_outlinks = _int_or_zero(item.get("outlinks_count"))
         blog_inlinks = sum(
-            1 for src in inlinks[url] if str(inventory_by_url.get(src, {}).get("page_type") or "") == "blog"
+            1
+            for src in inlinks[url]
+            if str(inventory_by_url.get(src, {}).get("page_type") or "") == "blog"
         )
         nodes.append(
             LinkNode(
                 url=url,
                 page_type=page_type,  # type: ignore[arg-type]
-                inlink_count=explicit_inlinks if explicit_inlinks else int(fallback_inlinks or 0),
-                outlink_count=explicit_outlinks if explicit_outlinks else int(fallback_outlinks or 0),
+                inlink_count=explicit_inlinks if explicit_inlinks else fallback_inlinks,
+                outlink_count=explicit_outlinks if explicit_outlinks else fallback_outlinks,
                 blog_inlink_count=blog_inlinks,
                 is_commercial_target=page_type in _COMMERCIAL_TYPES,
             )
@@ -136,8 +140,9 @@ def build_link_graph(
         if node["is_commercial_target"] and node["blog_inlink_count"] == 0
     ]
     blog_low = [
-        node for node in serialised_nodes
-        if node["page_type"] == "blog" and int(node["inlink_count"] or 0) <= 1
+        node
+        for node in serialised_nodes
+        if node["page_type"] == "blog" and _int_or_zero(node["inlink_count"]) <= 1
     ]
 
     warnings = list(parse_warnings)
@@ -265,3 +270,18 @@ def _string_or_none(value: Any) -> str | None:
         return None
     text = str(value).strip()
     return text or None
+
+
+def _int_or_zero(value: Any) -> int:
+    """Coerce a JSON-loaded count to a non-negative int.
+
+    Inventory items from disk carry ``inlinks_count`` / ``outlinks_count``
+    as `Any`; this helper keeps the callers' types clean while preserving
+    the original "treat anything weird as zero" behaviour.
+    """
+    if value in (None, ""):
+        return 0
+    try:
+        return max(0, int(value))
+    except (TypeError, ValueError):
+        return 0

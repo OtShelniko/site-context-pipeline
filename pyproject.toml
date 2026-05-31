@@ -58,6 +58,7 @@ dev = [
     "ruff>=0.5",
     "jsonschema>=4.21",
     "hypothesis>=6.100",
+    "mypy>=1.11",
 ]
 docs = [
     "mkdocs>=1.6",
@@ -134,3 +135,18 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src/site_context_pipeline"]
+# Tests use Hypothesis fixtures and small ad-hoc helpers; skipping
+# strict type-checking on the test suite keeps the signal high.
+exclude = ["tests/", "build/", "dist/", "site/"]
+# Third-party libraries used only as dev extras may not ship type
+# stubs; allow that without forcing every contributor to install them.
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = ["jsonschema.*", "referencing.*", "hypothesis.*"]
+ignore_missing_imports = true

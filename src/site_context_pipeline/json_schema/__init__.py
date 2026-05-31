@@ -62,7 +62,8 @@ def load_schema(name: str) -> dict[str, Any]:
 
     filename = schema_filename(name)
     text = resources.files(__package__).joinpath(filename).read_text(encoding="utf-8")
-    return json.loads(text)
+    parsed: dict[str, Any] = json.loads(text)
+    return parsed
 
 
 __all__ = ["list_schemas", "load_schema", "schema_filename"]
