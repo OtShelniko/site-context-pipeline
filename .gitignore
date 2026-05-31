@@ -38,3 +38,4 @@ examples/demo-client/output/*.md
 
 # Smoke-test workspaces
 _smoke/
+_readme_demo/
