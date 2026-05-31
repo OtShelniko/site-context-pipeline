@@ -2,19 +2,22 @@
 #
 # Prereqs:
 #   1. `gh` CLI installed (https://cli.github.com).
-#   2. `gh auth login` completed for github.com with `repo` scope.
-#   3. Run from the repository root: `pwsh .github/bootstrap-github.ps1`.
+#   2. Authenticated with WRITE scopes:
+#         gh auth refresh -h github.com -s repo,write:org
+#      The default `gh auth login` flow may issue a read-only fine-grained
+#      token; that one can list things but cannot create releases, issues,
+#      or labels and cannot edit the repo description.
+#   3. Run from the repository root:
+#         powershell -ExecutionPolicy Bypass -File .github\bootstrap-github.ps1
 #
 # What this does (idempotent — safe to re-run):
-#   - sets the repo description and homepage,
-#   - sets the repo topics,
-#   - creates the standard labels we reference,
-#   - opens the v0.1 follow-up issues,
-#   - creates the v0.1.0 release from the existing tag.
+#   - sets the repo description, homepage, and topics,
+#   - ensures the standard labels exist,
+#   - opens the v0.1 follow-up issues (skips ones that already exist),
+#   - creates the v0.1.0 git tag and the GitHub release.
 #
 # It does NOT push code, does NOT touch the working tree, and does NOT
-# enable any GitHub feature you have not already enabled (Discussions,
-# Pages, etc.). Re-running is safe; existing items are skipped.
+# enable any GitHub feature you have not already enabled.
 
 $ErrorActionPreference = 'Stop'
 
@@ -32,13 +35,27 @@ $topics = @(
     'open-source'
 )
 
-Write-Host '==> Setting repo description, homepage, and topics' -ForegroundColor Cyan
-gh repo edit $repo `
-    --description $description `
-    --homepage $homepage
+function Invoke-GhSafe {
+    param(
+        [Parameter(Mandatory)] [string] $Label,
+        [Parameter(Mandatory)] [scriptblock] $Action
+    )
+    try {
+        & $Action
+        return $true
+    } catch {
+        Write-Host "    skipped ($Label): $($_.Exception.Message.Trim())" -ForegroundColor Yellow
+        return $false
+    }
+}
 
-# Topics: gh expects a comma-separated string for --add-topic.
-gh repo edit $repo --add-topic ($topics -join ',')
+# ---------------------------------------------------------------------------
+# Repo metadata
+# ---------------------------------------------------------------------------
+
+Write-Host '==> Setting repo description, homepage, and topics' -ForegroundColor Cyan
+$null = Invoke-GhSafe 'description/homepage' { gh repo edit $repo --description $description --homepage $homepage 2>&1 | Out-Null }
+$null = Invoke-GhSafe 'topics' { gh repo edit $repo --add-topic ($topics -join ',') 2>&1 | Out-Null }
 
 # ---------------------------------------------------------------------------
 # Labels
@@ -55,14 +72,35 @@ $labels = @(
 )
 
 Write-Host '==> Ensuring labels exist' -ForegroundColor Cyan
+
+# Read all labels once so we don't fight with shell-quoting per-name.
+$existingLabelsJson = ''
+try {
+    $existingLabelsJson = gh label list --repo $repo --json name --limit 200 2>&1 | Out-String
+} catch {
+    Write-Host "    could not list labels: $($_.Exception.Message.Trim())" -ForegroundColor Yellow
+}
+$existingNames = @()
+if ($existingLabelsJson) {
+    try {
+        $existingNames = ($existingLabelsJson | ConvertFrom-Json).name
+    } catch {
+        $existingNames = @()
+    }
+}
+
 foreach ($label in $labels) {
-    $existing = gh label list --repo $repo --json name --jq ".[] | select(.name == `"$($label.name)`") | .name" 2>$null
-    if ($existing) {
-        gh label edit $label.name --repo $repo --color $label.color --description $label.description | Out-Null
-        Write-Host "    updated: $($label.name)"
+    $alreadyThere = $existingNames -contains $label.name
+    if ($alreadyThere) {
+        $ok = Invoke-GhSafe "edit '$($label.name)'" {
+            gh label edit $label.name --repo $repo --color $label.color --description $label.description 2>&1 | Out-Null
+        }
+        if ($ok) { Write-Host "    updated: $($label.name)" }
     } else {
-        gh label create $label.name --repo $repo --color $label.color --description $label.description | Out-Null
-        Write-Host "    created: $($label.name)"
+        $ok = Invoke-GhSafe "create '$($label.name)'" {
+            gh label create $label.name --repo $repo --color $label.color --description $label.description 2>&1 | Out-Null
+        }
+        if ($ok) { Write-Host "    created: $($label.name)" }
     }
 }
 
@@ -220,12 +258,25 @@ See `ROADMAP.md` (0.3) for context.
 )
 
 Write-Host '==> Opening roadmap issues' -ForegroundColor Cyan
+
+$existingTitlesJson = ''
+try {
+    $existingTitlesJson = gh issue list --repo $repo --state all --limit 200 --json number,title 2>&1 | Out-String
+} catch {
+    Write-Host "    could not list issues: $($_.Exception.Message.Trim())" -ForegroundColor Yellow
+}
+$existingTitles = @()
+if ($existingTitlesJson) {
+    try {
+        $existingTitles = ($existingTitlesJson | ConvertFrom-Json).title
+    } catch {
+        $existingTitles = @()
+    }
+}
+
 foreach ($issue in $issues) {
-    # Skip if an issue with the exact same title already exists (any state).
-    $existing = gh issue list --repo $repo --search "$($issue.title) in:title" --state all --json number,title `
-        --jq ".[] | select(.title == `"$($issue.title)`") | .number" 2>$null
-    if ($existing) {
-        Write-Host "    skipped (already exists as #$existing): $($issue.title)"
+    if ($existingTitles -contains $issue.title) {
+        Write-Host "    skipped (already exists): $($issue.title)"
         continue
     }
     $bodyFile = New-TemporaryFile
@@ -235,9 +286,11 @@ foreach ($issue in $issues) {
         $labelArgs += '--label'
         $labelArgs += $label
     }
-    gh issue create --repo $repo --title $issue.title --body-file $bodyFile @labelArgs | Out-Null
+    $ok = Invoke-GhSafe "create '$($issue.title)'" {
+        gh issue create --repo $repo --title $issue.title --body-file $bodyFile @labelArgs 2>&1 | Out-Null
+    }
     Remove-Item $bodyFile
-    Write-Host "    created: $($issue.title)"
+    if ($ok) { Write-Host "    created: $($issue.title)" }
 }
 
 # ---------------------------------------------------------------------------
@@ -255,16 +308,18 @@ if (-not $tagExists) {
     Write-Host '    tag v0.1.0 already exists'
 }
 
-$releaseExists = gh release view v0.1.0 --repo $repo 2>$null
-if ($LASTEXITCODE -ne 0) {
-    gh release create v0.1.0 `
-        --repo $repo `
-        --title 'v0.1.0 — initial public release' `
-        --notes-file '.github/RELEASE_NOTES_v0.1.0.md' `
-        --latest | Out-Null
-    Write-Host '    release v0.1.0 created'
-} else {
+$releaseCheck = gh release view v0.1.0 --repo $repo 2>$null
+if ($LASTEXITCODE -eq 0) {
     Write-Host '    release v0.1.0 already exists'
+} else {
+    $ok = Invoke-GhSafe 'release v0.1.0' {
+        gh release create v0.1.0 `
+            --repo $repo `
+            --title 'v0.1.0 — initial public release' `
+            --notes-file '.github/RELEASE_NOTES_v0.1.0.md' `
+            --latest 2>&1 | Out-Null
+    }
+    if ($ok) { Write-Host '    release v0.1.0 created' }
 }
 
 Write-Host ''
