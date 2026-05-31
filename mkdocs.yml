@@ -96,6 +96,7 @@ plugins:
 nav:
   - Home: index.md
   - Tutorial: tutorial.md
+  - Recipes: recipes.md
   - Architecture: architecture.md
   - Providers: providers.md
   - Artifacts: artifacts.md

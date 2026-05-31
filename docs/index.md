@@ -35,6 +35,14 @@ brief or a draft.
     A 10-minute end-to-end walk-through. From a CSV (or sitemap) to a
     finished context pack, with explanations for every step.
 
+- :material-toolbox-outline:{ .lg .middle } **[Recipes](recipes.md)**
+
+    ---
+
+    Concrete workflows: onboarding a new site, quarterly audits,
+    pre-rebrand snapshots, gating drafts in CI, handing the pack to
+    an LLM with citations.
+
 - :material-sitemap:{ .lg .middle } **[Architecture](architecture.md)**
 
     ---

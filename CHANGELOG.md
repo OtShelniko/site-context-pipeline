@@ -9,6 +9,15 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Recipes documentation** — new
+  [`docs/recipes.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/recipes.md)
+  ships nine end-to-end workflows that show the toolkit in real use:
+  onboarding a new site, quarterly audits, finding blog posts that
+  should be services, pre-rebrand link-graph snapshots, gating
+  drafts in CI, handing the pack to an LLM with citations,
+  side-by-side client comparison, classifier coverage audits, and
+  running inside Docker. Linked from the README, the mkdocs nav, and
+  the docs index card grid. No code changes.
 - **Public JSON Schemas for every artifact.** New
   `site_context_pipeline.json_schema` subpackage ships six JSON
   Schema 2020-12 documents
