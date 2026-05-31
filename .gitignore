@@ -13,6 +13,9 @@ dist/
 _build_smoke/
 *.egg-info/
 
+# Docs build output (mkdocs)
+site/
+
 # Tooling caches
 .ruff_cache/
 .mypy_cache/

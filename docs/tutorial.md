@@ -342,14 +342,14 @@ inputs to the next step are honest and stable.
 
 ## Where to go next
 
-- [`README.md`](../README.md) — overview and command reference.
+- [`README.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/README.md) — overview and command reference.
 - [`docs/architecture.md`](./architecture.md) — how the modules fit
   together; the vendor-neutrality contract.
 - [`docs/providers.md`](./providers.md) — the rules for keyword and
   search-performance providers, including how to add your own.
 - [`docs/artifacts.md`](./artifacts.md) — the full schema reference
   for every file the pipeline touches.
-- [`ROADMAP.md`](../ROADMAP.md) — what is planned for 0.2 and beyond.
+- [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md) — what is planned for 0.2 and beyond.
 - The [issue tracker](https://github.com/OtShelniko/site-context-pipeline/issues)
   is where roadmap work happens. Open issues with the `good first
   issue` label are a friendly entry point.

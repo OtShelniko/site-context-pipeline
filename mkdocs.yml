@@ -1,0 +1,107 @@
+site_name: site-context-pipeline
+site_description: >-
+  Offline-first CLI for building structured site context packs for
+  human-reviewed, LLM-assisted content workflows.
+site_url: https://otshelniko.github.io/site-context-pipeline/
+site_author: site-context-pipeline contributors
+
+repo_name: OtShelniko/site-context-pipeline
+repo_url: https://github.com/OtShelniko/site-context-pipeline
+edit_uri: edit/main/docs/
+
+# `docs/` already exists with all the markdown; keep it as the source.
+docs_dir: docs
+# `site/` is build output, not committed.
+site_dir: site
+
+# Strict mode catches broken nav entries and bad links during build.
+strict: true
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.action.view
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/OtShelniko/site-context-pipeline
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/site-context-pipeline/
+  generator: false
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path:
+        - .
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.smartsymbols
+  - pymdownx.keys
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Tutorial: tutorial.md
+  - Architecture: architecture.md
+  - Providers: providers.md
+  - Artifacts: artifacts.md
+  - Classifier: classifier.md
+  - QA: qa.md
+  - Roadmap: roadmap.md
+  - Changelog: changelog.md
+  - Contributing: contributing.md
+  - Security: security.md
