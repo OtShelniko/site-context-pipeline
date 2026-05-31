@@ -107,6 +107,41 @@ class SearchPerformanceProvider(ABC):
 
 
 # ---------------------------------------------------------------------------
+# Search evidence providers (one row per organic SERP hit)
+# ---------------------------------------------------------------------------
+
+
+class SearchEvidenceProvider(ABC):
+    """Anything that emits ``SearchEvidence`` rows.
+
+    Concrete providers should:
+
+    * declare a stable, lowercase ``provider_name`` (e.g.
+      ``local-serp-csv``);
+    * emit one ``SearchEvidence`` per organic SERP entry (rank, title,
+      url, snippet, optional page_type);
+    * stay offline by default. Live SERP scraping is **not** part of
+      0.x; vendor adapters that hit a SERP API live behind their own
+      optional extra and never run by default.
+
+    The toolkit caps the number of evidence items per query at the
+    consumer side (the context pack's renderer); the provider just
+    emits everything it has.
+    """
+
+    provider_name: str = "abstract"
+
+    @abstractmethod
+    def run(
+        self,
+        *,
+        source: str | None = None,
+        provider_config: dict[str, Any] | None = None,
+    ) -> ProviderResult:
+        ...
+
+
+# ---------------------------------------------------------------------------
 # Helpers used by adapters
 # ---------------------------------------------------------------------------
 

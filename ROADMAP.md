@@ -63,12 +63,11 @@ Goal: make it easy to feed data in without hand-rolling CSVs.
 Goal: capture what the SERP looks like (without scraping it) and
 provide deterministic checks over Markdown drafts.
 
-- **Search evidence provider interface** — finalise the
-  `SearchEvidenceProvider` abstract base and the `SearchEvidence`
-  schema (already drafted in `schemas.py`).
-- **Local SERP evidence CSV importer** — read top-N organic rows for a
-  query from a hand-curated CSV (`query`, `rank`, `title`, `url`,
-  `snippet`, `page_type`). No live SERP scraping.
+- **Search evidence provider interface** ✅ *(merged in `Unreleased`)* —
+  finalised the `SearchEvidenceProvider` abstract base.
+- **Local SERP evidence CSV importer** ✅ *(merged in `Unreleased`)* —
+  read top-N organic rows for a query from a hand-curated CSV. No
+  live SERP scraping.
 - **Deterministic content QA module** — offline checks over a Markdown
   draft (keyphrase distribution, internal-link sanity, slug shape,
   heading hierarchy, missing alt text). No LLM involvement.

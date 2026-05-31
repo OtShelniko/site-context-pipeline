@@ -48,8 +48,12 @@ def build_context_pack(paths: ClientPaths, *, write: bool) -> dict[str, Any]:
     search_performance_payload = _read_provider_artifact(
         paths.data / "search_performance.json"
     )
+    search_evidence_payload = _read_provider_artifact(
+        paths.data / "search_evidence.json"
+    )
     keyword_items = list(keyword_metrics_payload.get("items") or [])
     performance_items = list(search_performance_payload.get("items") or [])
+    evidence_items = list(search_evidence_payload.get("items") or [])
 
     page_type_counts = _count_by_field(inventory, "page_type")
     classification_reasons = _count_by_field(inventory, "classification_reason")
@@ -70,6 +74,7 @@ def build_context_pack(paths: ClientPaths, *, write: bool) -> dict[str, Any]:
         performance_items=performance_items,
         link_graph=link_graph,
     )
+    evidence_summary = _search_evidence_summary(evidence_items)
 
     pack = {
         "schema_version": SCHEMA_VERSION,
@@ -82,6 +87,7 @@ def build_context_pack(paths: ClientPaths, *, write: bool) -> dict[str, Any]:
             "node_count": len(link_graph.get("nodes") or []),
             "keyword_metrics_count": len(keyword_items),
             "search_performance_rows": len(performance_items),
+            "search_evidence_rows": len(evidence_items),
         },
         "classification": {
             "reasons": classification_reasons,
@@ -101,9 +107,11 @@ def build_context_pack(paths: ClientPaths, *, write: bool) -> dict[str, Any]:
             "ranked_but_unsupported": ranked_but_unsupported,
         },
         "search_performance_summary": performance_summary,
+        "search_evidence": evidence_summary,
         "providers": {
             "keyword_metrics": _provider_summary(keyword_metrics_payload),
             "search_performance": _provider_summary(search_performance_payload),
+            "search_evidence": _provider_summary(search_evidence_payload),
         },
         "project_notes": project_notes,
         "sources": {
@@ -112,6 +120,7 @@ def build_context_pack(paths: ClientPaths, *, write: bool) -> dict[str, Any]:
             "project_md": str(paths.input / "project.md"),
             "keyword_metrics": str(paths.data / "keyword_metrics.json"),
             "search_performance": str(paths.data / "search_performance.json"),
+            "search_evidence": str(paths.data / "search_evidence.json"),
         },
         "warnings": _collect_warnings(
             inventory=inventory,
@@ -287,6 +296,68 @@ def _performance_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
         "total_impressions": total_impressions,
         "average_ctr": avg_ctr,
         "average_position": avg_position,
+    }
+
+
+def _search_evidence_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
+    """Group evidence rows by query and surface a summary the pack
+    consumer can read at a glance.
+
+    Returns a dict with three keys:
+
+    * ``rows`` — total number of evidence rows across all queries.
+    * ``queries`` — number of distinct queries.
+    * ``per_query`` — list of ``{"query", "result_count", "page_types",
+      "top_results"}``, one entry per distinct query, sorted by query
+      string for stable output. Each entry's ``top_results`` is the
+      top-5 results by ``rank`` (ascending).
+    """
+    if not items:
+        return {"rows": 0, "queries": 0, "per_query": []}
+
+    by_query: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        query = str(item.get("query") or "").strip()
+        if not query:
+            continue
+        by_query[query].append(item)
+
+    per_query: list[dict[str, Any]] = []
+    for query in sorted(by_query):
+        rows = by_query[query]
+        sorted_rows = sorted(
+            rows,
+            key=lambda r: (r.get("rank") is None, r.get("rank") or 999),
+        )
+        page_types: dict[str, int] = {}
+        for row in rows:
+            page_type = str(row.get("page_type") or "").strip() or "unknown"
+            page_types[page_type] = page_types.get(page_type, 0) + 1
+        per_query.append(
+            {
+                "query": query,
+                "result_count": len(rows),
+                "page_types": dict(sorted(page_types.items())),
+                "top_results": [
+                    {
+                        "rank": row.get("rank"),
+                        "title": row.get("title"),
+                        "url": row.get("url"),
+                        "page_type": row.get("page_type"),
+                        "snippet": row.get("snippet"),
+                        "source": row.get("source"),
+                    }
+                    for row in sorted_rows[:5]
+                ],
+            }
+        )
+
+    return {
+        "rows": len(items),
+        "queries": len(by_query),
+        "per_query": per_query,
     }
 
 
@@ -533,6 +604,35 @@ def _render_pack_markdown(pack: dict[str, Any]) -> str:
             )
         )
 
+    evidence = pack.get("search_evidence") or {}
+    if evidence and evidence.get("rows"):
+        parts.append(md.render_heading(2, "What competitors do"))
+        parts.append(
+            md.render_paragraph(
+                "Hand-curated SERP evidence imported through "
+                "`import-search-evidence`. The toolkit does not scrape "
+                "live SERPs; what you see here is what was put into the "
+                "CSV by the operator."
+            )
+        )
+        for entry in evidence.get("per_query") or []:
+            parts.append(md.render_heading(3, str(entry.get("query") or "")))
+            page_types = entry.get("page_types") or {}
+            page_types_str = ", ".join(
+                f"{name}={count}" for name, count in page_types.items()
+            ) or "_unknown_"
+            parts.append(
+                md.render_definition_list(
+                    [
+                        ("result_count", entry.get("result_count")),
+                        ("page_types", page_types_str),
+                    ]
+                )
+            )
+            top_lines = _evidence_lines(entry.get("top_results") or [])
+            if top_lines:
+                parts.append(md.render_bullet_list(top_lines))
+
     parts.append(md.render_heading(2, "Project notes"))
     notes = pack.get("project_notes") or ""
     parts.append(notes.rstrip() + "\n" if notes.strip() else "_no project notes provided_\n")
@@ -601,6 +701,24 @@ def _page_lines(items: list[dict[str, Any]]) -> list[str]:
         reason = item.get("classification_reason") or ""
         lines.append(f"{md.render_link(title, url)} — _{reason}_")
     return lines
+
+
+def _evidence_lines(rows: list[dict[str, Any]]) -> list[str]:
+    """Render top-N SERP rows as a bullet list for the context pack.
+
+    Each line is short on purpose — the JSON sibling carries the full
+    payload; this is just for human review."""
+    out: list[str] = []
+    for row in rows:
+        rank = row.get("rank")
+        title = row.get("title") or row.get("url") or ""
+        url = row.get("url") or ""
+        page_type = row.get("page_type")
+        rank_text = f"#{rank}" if isinstance(rank, int) else "#?"
+        link = md.render_link(title, url) if url else title
+        suffix = f" — `{page_type}`" if page_type else ""
+        out.append(f"{rank_text} {link}{suffix}")
+    return out
 
 
 def _node_lines(items: list[dict[str, Any]]) -> list[str]:

@@ -32,6 +32,7 @@ from .providers import (
     ProviderError,
     available_providers,
     get_keyword_provider,
+    get_search_evidence_provider,
     get_search_performance_provider,
 )
 
@@ -61,6 +62,8 @@ def main(argv: list[str] | None = None) -> int:
         payload = _run_import_keywords(paths, args)
     elif args.command == "import-search-performance":
         payload = _run_import_search_performance(paths, args)
+    elif args.command == "import-search-evidence":
+        payload = _run_import_search_evidence(paths, args)
     else:  # pragma: no cover — argparse guards this
         parser.error(f"unknown command: {args.command}")
         return 2
@@ -201,6 +204,30 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Provider config (JSON file). Optional, used by future live adapters.",
     )
 
+    se = sub.add_parser(
+        "import-search-evidence",
+        parents=[common_client],
+        help=(
+            "Import hand-curated SERP-evidence rows into "
+            "<client>/data/search_evidence.json"
+        ),
+    )
+    se.add_argument(
+        "--provider",
+        required=True,
+        help="Provider slug (see `list-providers`)",
+    )
+    se.add_argument(
+        "--source",
+        default=None,
+        help="Provider-specific input path (e.g. CSV file for local-serp-csv)",
+    )
+    se.add_argument(
+        "--config",
+        default=None,
+        help="Provider config (JSON file). Optional, reserved for future live adapters.",
+    )
+
     sub.add_parser(
         "list-providers",
         help="List available keyword and search-performance providers",
@@ -255,6 +282,7 @@ def _run_inspect(paths: ClientPaths) -> dict[str, Any]:
         ("data/internal_link_graph.json", paths.data / "internal_link_graph.json"),
         ("data/keyword_metrics.json", paths.data / "keyword_metrics.json"),
         ("data/search_performance.json", paths.data / "search_performance.json"),
+        ("data/search_evidence.json", paths.data / "search_evidence.json"),
         ("output/agent_context_pack.json", paths.output / "agent_context_pack.json"),
         ("output/agent_context_pack.md", paths.output / "agent_context_pack.md"),
         ("output/content_opportunities.md", paths.output / "content_opportunities.md"),
@@ -306,6 +334,21 @@ def _run_import_search_performance(
         write=args.write,
         getter=get_search_performance_provider,
         target_path=paths.data / "search_performance.json",
+    )
+
+
+def _run_import_search_evidence(
+    paths: ClientPaths, args: argparse.Namespace
+) -> dict[str, Any]:
+    return _run_provider(
+        paths,
+        command="import-search-evidence",
+        provider_name=args.provider,
+        source=args.source,
+        config_path=args.config,
+        write=args.write,
+        getter=get_search_evidence_provider,
+        target_path=paths.data / "search_evidence.json",
     )
 
 

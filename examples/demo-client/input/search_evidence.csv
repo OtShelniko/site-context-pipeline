@@ -1,0 +1,9 @@
+query,rank,title,url,snippet,page_type
+local delivery planning,1,Plan a Local Delivery Run,https://competitor-a.example/blog/local-delivery,How to plan local delivery routes,article
+local delivery planning,2,Local Delivery Pricing Guide,https://competitor-b.example/pricing-guide,Pricing factors for local runs,article
+local delivery planning,3,Same-Day Local Service,https://competitor-c.example/services/same-day,Hire a courier for same-day delivery,landing
+delivery cost guide,1,How Delivery Costs Work,https://competitor-a.example/blog/delivery-costs,"Distance, weight, fuel, surcharges",article
+delivery cost guide,2,Delivery Pricing Calculator,https://competitor-b.example/calculator,Estimate the price online,calculator
+delivery cost guide,3,Cost of Last-Mile Delivery,https://competitor-d.example/blog/last-mile-cost,A breakdown of last-mile cost components,article
+business delivery pricing,1,Business Pricing Plans,https://competitor-b.example/business-plans,Volume discounts and contracts,landing
+business delivery pricing,2,B2B Logistics Rates,https://competitor-e.example/b2b-rates,How freight rates are negotiated,article

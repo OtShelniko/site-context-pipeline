@@ -13,12 +13,14 @@ from typing import Any
 from .base import (
     KeywordProvider,
     ProviderConfigurationError,
+    SearchEvidenceProvider,
     SearchPerformanceProvider,
 )
 from .google_ads_keyword_planner import GoogleAdsKeywordPlannerProvider
 from .google_search_console import GoogleSearchConsoleProvider
 from .local_keyword_csv import LocalKeywordCsvProvider
 from .local_search_console_csv import LocalSearchConsoleCsvProvider
+from .local_search_evidence_csv import LocalSearchEvidenceCsvProvider
 
 KEYWORD_PROVIDERS: dict[str, type[KeywordProvider]] = {
     LocalKeywordCsvProvider.provider_name: LocalKeywordCsvProvider,
@@ -28,6 +30,10 @@ KEYWORD_PROVIDERS: dict[str, type[KeywordProvider]] = {
 SEARCH_PERFORMANCE_PROVIDERS: dict[str, type[SearchPerformanceProvider]] = {
     LocalSearchConsoleCsvProvider.provider_name: LocalSearchConsoleCsvProvider,
     GoogleSearchConsoleProvider.provider_name: GoogleSearchConsoleProvider,
+}
+
+SEARCH_EVIDENCE_PROVIDERS: dict[str, type[SearchEvidenceProvider]] = {
+    LocalSearchEvidenceCsvProvider.provider_name: LocalSearchEvidenceCsvProvider,
 }
 
 
@@ -48,6 +54,11 @@ _PROVIDER_DESCRIPTIONS: dict[str, str] = {
         "Stub for live Google Search Console access. Returns "
         "not_configured in this release; export CSV and use local-gsc-csv."
     ),
+    LocalSearchEvidenceCsvProvider.provider_name: (
+        "Read hand-curated SERP-evidence rows (query, rank, title, url, "
+        "snippet, page_type) from a local CSV. Offline; the toolkit "
+        "deliberately does not scrape SERPs in 0.x."
+    ),
 }
 
 
@@ -67,6 +78,16 @@ def get_search_performance_provider(name: str) -> SearchPerformanceProvider:
         raise ProviderConfigurationError(
             f"unknown search-performance provider: {name!r}; "
             f"available: {sorted(SEARCH_PERFORMANCE_PROVIDERS)}"
+        )
+    return cls()
+
+
+def get_search_evidence_provider(name: str) -> SearchEvidenceProvider:
+    cls = SEARCH_EVIDENCE_PROVIDERS.get(name)
+    if cls is None:
+        raise ProviderConfigurationError(
+            f"unknown search-evidence provider: {name!r}; "
+            f"available: {sorted(SEARCH_EVIDENCE_PROVIDERS)}"
         )
     return cls()
 
@@ -92,6 +113,15 @@ def available_providers() -> dict[str, Any]:
             }
             for name in sorted(SEARCH_PERFORMANCE_PROVIDERS)
         ],
+        "search_evidence": [
+            {
+                "name": name,
+                "kind": "search_evidence",
+                "live": _is_live(name),
+                "description": _PROVIDER_DESCRIPTIONS.get(name, ""),
+            }
+            for name in sorted(SEARCH_EVIDENCE_PROVIDERS)
+        ],
     }
 
 
@@ -101,4 +131,5 @@ def _is_live(name: str) -> bool:
     return name in {
         LocalKeywordCsvProvider.provider_name,
         LocalSearchConsoleCsvProvider.provider_name,
+        LocalSearchEvidenceCsvProvider.provider_name,
     }

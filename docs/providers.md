@@ -234,5 +234,6 @@ These rules apply to every present and future provider:
 | `google-ads` | keyword | stub | no — returns `not_configured` |
 | `local-gsc-csv` | search_performance | live | yes |
 | `google-search-console` | search_performance | stub | no — returns `not_configured` |
+| `local-serp-csv` | search_evidence | live | yes |
 
 Run `site-context-pipeline list-providers` to see the same list as JSON.
