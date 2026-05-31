@@ -1,0 +1,6 @@
+"Address","Content Type","Status Code","Status","Indexability","Title 1","Title 1 Length","Meta Description 1","H1-1","Word Count","Crawl Depth","Inlinks","Unique Inlinks","Outlinks","Unique Outlinks"
+"https://example.com/","text/html; charset=UTF-8","200","OK","Indexable","Example Co","10","Welcome to Example Co.","Welcome","180","0","8","6","12","9"
+"https://example.com/services/","text/html; charset=UTF-8","200","OK","Indexable","Services","8","Our services overview.","Our services","420","1","5","4","9","7"
+"https://example.com/services/local-delivery/","text/html; charset=UTF-8","200","OK","Indexable","Local delivery","14","Same-day delivery in town.","Local delivery service","640","2","4","3","6","5"
+"https://example.com/blog/how-to-plan-delivery/","text/html; charset=UTF-8","200","OK","Indexable","How to plan a delivery","21","Delivery planning guide.","How to plan a delivery","1100","2","2","2","3","3"
+"https://example.com/about/","text/html; charset=UTF-8","200","OK","Indexable","About","5","About Example Co.","About us","300","1","3","3","2","2"

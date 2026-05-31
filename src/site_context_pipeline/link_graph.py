@@ -22,6 +22,11 @@ from pathlib import Path
 from typing import Any
 
 from .clients import ClientPaths, read_json, write_json
+from .importers import (
+    ScreamingFrogImportError,
+    detect_screaming_frog_flavour,
+    read_screaming_frog_links,
+)
 from .inventory import normalise_url
 from .schemas import LinkEdge, LinkNode
 
@@ -39,13 +44,18 @@ def build_link_graph(
     *,
     write: bool,
     source: str | Path | None = None,
+    source_format: str | None = None,
 ) -> dict[str, Any]:
     """Build ``data/internal_link_graph.json``.
 
     ``source`` may be a path to a CSV/JSON edge list, or ``None`` to default
-    to ``<client>/input/links.csv``. If no edge list is available the graph
-    still contains nodes derived from the inventory; edges are empty and a
-    warning is recorded.
+    to ``<client>/input/links.csv``. ``source_format`` forces a particular
+    reader (``auto``, ``csv``, ``json``, ``screaming-frog``); ``auto``
+    picks by extension and sniffs CSV headers — Screaming Frog
+    ``all_inlinks.csv`` exports get auto-routed to the SF reader.
+
+    If no edge list is available the graph still contains nodes derived
+    from the inventory; edges are empty and a warning is recorded.
     """
     inventory_path = paths.data / "content_inventory.json"
     inventory_raw = read_json(inventory_path, [])
@@ -57,7 +67,7 @@ def build_link_graph(
     }
 
     source_path = _resolve_source(source, paths)
-    edge_rows, source_format, parse_warnings = _read_source(source_path)
+    edge_rows, detected_format, parse_warnings = _read_source(source_path, source_format)
 
     inlinks: dict[str, set[str]] = defaultdict(set)
     outlinks: dict[str, set[str]] = defaultdict(set)
@@ -145,7 +155,7 @@ def build_link_graph(
     result: dict[str, Any] = {
         "planned_writes": [str(graph_path)],
         "source_path": str(source_path) if source_path else None,
-        "source_format": source_format,
+        "source_format": detected_format,
         "nodes_count": len(serialised_nodes),
         "edges_count": len(serialised_edges),
         "commercial_pages_low_blog_inlinks_count": len(commercial_low),
@@ -166,17 +176,48 @@ def _resolve_source(source: str | Path | None, paths: ClientPaths) -> Path | Non
     return Path(source)
 
 
-def _read_source(source_path: Path | None) -> tuple[list[dict[str, Any]], str, list[str]]:
+def _read_source(
+    source_path: Path | None, source_format: str | None
+) -> tuple[list[dict[str, Any]], str, list[str]]:
     if source_path is None:
         return [], "missing", []
     if not source_path.exists():
         return [], "missing", [f"links_source_not_found:{source_path}"]
-    suffix = source_path.suffix.lower()
-    if suffix == ".csv":
+    chosen = (source_format or "auto").lower()
+    if chosen == "auto":
+        suffix = source_path.suffix.lower()
+        if suffix == ".csv":
+            # Screaming Frog all_inlinks.csv has Source/Destination
+            # columns the generic CSV reader recognises too, but the
+            # SF reader keeps the rich raw payload (Type, Link Position,
+            # Follow, etc.) for forensics.
+            if detect_screaming_frog_flavour(source_path) == "links":
+                chosen = "screaming-frog"
+            else:
+                chosen = "csv"
+        elif suffix == ".json":
+            chosen = "json"
+        else:
+            return [], "unknown", [f"unsupported_links_extension:{suffix}"]
+
+    if chosen == "csv":
         return _read_csv(source_path), "csv", []
-    if suffix == ".json":
+    if chosen == "json":
         return _read_json_list(source_path), "json", []
-    return [], "unknown", [f"unsupported_links_extension:{suffix}"]
+    if chosen == "screaming-frog":
+        return _read_screaming_frog_links_source(source_path)
+    return [], "unknown", [f"unsupported_links_format:{chosen}"]
+
+
+def _read_screaming_frog_links_source(
+    source_path: Path,
+) -> tuple[list[dict[str, Any]], str, list[str]]:
+    """Adapt Screaming Frog link rows to ``build_link_graph``'s shape."""
+    try:
+        sf = read_screaming_frog_links(source_path)
+    except ScreamingFrogImportError as error:
+        return [], "screaming-frog", [f"screaming_frog_import_error:{error}"]
+    return list(sf.get("rows") or []), "screaming-frog", list(sf.get("warnings") or [])
 
 
 def _read_csv(path: Path) -> list[dict[str, Any]]:

@@ -23,7 +23,13 @@ from typing import Any
 from urllib.parse import urlparse, urlunparse
 
 from .clients import ClientPaths, read_json, write_json
-from .importers import SitemapImportError, read_sitemap
+from .importers import (
+    ScreamingFrogImportError,
+    SitemapImportError,
+    detect_screaming_frog_flavour,
+    read_screaming_frog_inventory,
+    read_sitemap,
+)
 from .schemas import InventoryItem, PageType
 
 # Default rule set. Each rule is a (page_type, marker) pair. The marker is
@@ -232,7 +238,10 @@ def _read_source(
 
     * ``source_format`` (when set to something other than ``"auto"``) wins.
     * Otherwise the file extension is used: ``.csv`` → CSV, ``.json`` → JSON,
-      ``.xml`` → sitemap.
+      ``.xml`` → sitemap. For ``.csv`` we also peek at the header row;
+      Screaming Frog inventory exports (``Address``, ``Title 1``, ``H1-1``)
+      get routed to the SF reader so users do not have to know the format
+      name.
     * If neither yields a known format, return a clear warning so the caller
       can surface it.
     """
@@ -245,7 +254,11 @@ def _read_source(
     if chosen == "auto":
         suffix = source_path.suffix.lower()
         if suffix == ".csv":
-            chosen = "csv"
+            # Header-based sniff for Screaming Frog inventory CSVs.
+            if detect_screaming_frog_flavour(source_path) == "inventory":
+                chosen = "screaming-frog"
+            else:
+                chosen = "csv"
         elif suffix == ".json":
             chosen = "json"
         elif suffix == ".xml":
@@ -259,7 +272,20 @@ def _read_source(
         return _read_json_list(source_path), "json", []
     if chosen == "sitemap":
         return _read_sitemap_source(source_path)
+    if chosen == "screaming-frog":
+        return _read_screaming_frog_inventory_source(source_path)
     return [], "unknown", [f"unsupported_source_format:{chosen}"]
+
+
+def _read_screaming_frog_inventory_source(
+    source_path: Path,
+) -> tuple[list[dict[str, Any]], str, list[str]]:
+    """Adapt Screaming Frog inventory rows to ``build_inventory``'s shape."""
+    try:
+        sf = read_screaming_frog_inventory(source_path)
+    except ScreamingFrogImportError as error:
+        return [], "screaming-frog", [f"screaming_frog_import_error:{error}"]
+    return list(sf.get("rows") or []), "screaming-frog", list(sf.get("warnings") or [])
 
 
 def _read_sitemap_source(

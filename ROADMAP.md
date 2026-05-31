@@ -45,9 +45,10 @@ Goal: make it easy to feed data in without hand-rolling CSVs.
 - **Sitemap XML importer** ✅ *(merged in `Unreleased`)* — read one or more
   `sitemap.xml` (and sitemap-index) files into the inventory CSV format.
   Offline; no HTTP fetching.
-- **Screaming Frog CSV importer** — accept the canonical Screaming
-  Frog `internal_*.csv` and `*_inlinks/*_outlinks.csv` exports
-  directly, without a manual reshape step.
+- **Screaming Frog CSV importer** ✅ *(merged in `Unreleased`)* — accept
+  the canonical Screaming Frog `internal_*.csv` and
+  `*_inlinks/*_outlinks.csv` exports directly, without a manual reshape
+  step. Tolerates the legacy column layout (SF v15-17).
 - **Stronger configurable page classification** — promote the current
   built-in pattern list to a fully data-driven config:
   - per-client rule files in `config/classifier.json` with priorities,

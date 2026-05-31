@@ -7,7 +7,23 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet. See [`ROADMAP.md`](./ROADMAP.md) for what is planned.
+### Added
+
+- **Screaming Frog CSV importer** — `importers.screaming_frog` ships
+  three public functions: `read_inventory_csv` (`internal_html.csv` /
+  `internal_all.csv`), `read_link_csv` (`all_inlinks.csv` /
+  `all_outlinks.csv`), and `detect_flavour` for auto-routing. Tolerant
+  of header aliases between Screaming Frog versions (`Title 1` ↔
+  `Title`, `H1-1` ↔ `H1`, `Source`/`Destination` ↔ `From`/`To`).
+- `build-inventory --format screaming-frog` and `build-link-graph
+  --format screaming-frog` flags. `--format auto` (the default) sniffs
+  CSV headers and routes Screaming Frog exports to the SF reader
+  automatically — no flag needed for canonical exports.
+
+### Changed
+
+- `build_link_graph` now takes an optional `source_format` parameter
+  to mirror `build_inventory`. Existing CSV/JSON usage is unchanged.
 
 ## [0.1.1] — 2026-05-31
 
