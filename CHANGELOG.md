@@ -9,6 +9,18 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Per-provider reference** ([#18]) — new
+  [`docs/provider-reference.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/provider-reference.md)
+  documents every shipped provider with a fixed eight-heading layout
+  (identifier & kind, status, install requirements, inputs, output
+  artifact, failure modes, rate limits, worked example). Covers the
+  three live providers (`local-csv`, `local-gsc-csv`,
+  `local-serp-csv`) and the two stubs (`google-ads`,
+  `google-search-console`), including the planned config keys and
+  rate-limit behaviour for the future live adapters. Ends with a
+  copy-this template for contributing a new provider. Linked from the
+  README, the mkdocs nav, the docs index card grid, and
+  `docs/providers.md`. No code changes.
 - **Edge-case test coverage.** New `tests/test_coverage_edge_cases.py`
   adds 57 narrow tests for the error and fallback branches that the
   end-to-end tests skip: source-reader format selection and failure
@@ -256,6 +268,7 @@ Initial public extraction.
   names stay vendor-neutral.
 
 [Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.4.0...HEAD
+[#18]: https://github.com/OtShelniko/site-context-pipeline/issues/18
 [0.4.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.4.0
 [0.3.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.3.0
 [0.2.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.2.0

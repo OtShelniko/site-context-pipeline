@@ -101,6 +101,7 @@ nav:
   - Demo clients: demo-clients.md
   - Architecture: architecture.md
   - Providers: providers.md
+  - Provider reference: provider-reference.md
   - Artifacts: artifacts.md
   - Classifier: classifier.md
   - QA: qa.md

@@ -1,0 +1,290 @@
+# Provider reference
+
+A uniform, per-provider reference. Every provider shipped today is
+documented with the same fixed set of headings so a new contributor
+can copy the layout when adding their own adapter. For the philosophy,
+the result schema, and the safety rules that bind every provider, see
+[Providers](providers.md).
+
+Each entry below answers the same eight questions:
+
+1. **Identifier & kind** — the slug and which base class it extends.
+2. **Status** — live, stub, or planned.
+3. **Install requirements** — base install or an `[extra]`.
+4. **Inputs** — CSV columns (with aliases) or config keys.
+5. **Output** — the artifact path and the `source` value rows carry.
+6. **Failure modes** — what `not_configured` /
+   `ProviderConfigurationError` / `ProviderError` look like.
+7. **Rate limits** — for live adapters only.
+8. **Worked example** — a minimal end-to-end command.
+
+---
+
+## `local-csv`
+
+| | |
+|---|---|
+| **Identifier & kind** | `local-csv` · `KeywordProvider` |
+| **Status** | **live** |
+| **Install requirements** | base install (zero runtime deps) |
+| **Output artifact** | `data/keyword_metrics.json` |
+| **Row `source`** | `local-csv` |
+| **Rate limits** | n/a — reads a local file |
+
+### Inputs
+
+Reads keyword metrics from any CSV. Headers match case-insensitively;
+`_`, `-`, and space are equivalent (`Search Volume` ≡ `search_volume`).
+
+| Field | Required | Aliases | Parsing |
+|---|---|---|---|
+| `query` | **yes** (one of) | `keyword`, `search_term` | trimmed string |
+| `avg_monthly_searches` | no | `search_volume`, `monthly_searches`, `volume`, `searches` | int; `"1,234"` → `1234` |
+| `impressions` / `clicks` | no | — | int |
+| `ctr` | no | `click_through_rate` | fraction `[0..1]`; `"12.3%"` → `0.123` |
+| `position` | no | `average_position`, `avg_position`, `rank` | float |
+| `competition` | no | `competition_value`, `difficulty` | passthrough |
+| `geo` | no | `country`, `location` | string |
+| `language` | no | `lang` | string |
+| `locale` / `source_url` | no | `landing_page`, `url` (for `source_url`) | string |
+
+Unknown columns are preserved in each row's `raw` dict.
+
+### Failure modes
+
+| Condition | Behaviour |
+|---|---|
+| `--source` omitted | raises `ProviderConfigurationError` |
+| file does not exist | raises `ProviderConfigurationError` |
+| row has no `query` | row skipped; `skipped_rows_without_query:<n>` warning |
+| non-UTF-8 bytes | retries with `cp1251`; `csv_decoded_with_cp1251_fallback` warning |
+
+### Worked example
+
+```bash
+site-context-pipeline import-keywords \
+    --client demo \
+    --provider local-csv \
+    --source examples/demo-client/input/keyword_metrics.csv \
+    --write
+```
+
+---
+
+## `local-gsc-csv`
+
+| | |
+|---|---|
+| **Identifier & kind** | `local-gsc-csv` · `SearchPerformanceProvider` |
+| **Status** | **live** |
+| **Install requirements** | base install |
+| **Output artifact** | `data/search_performance.json` |
+| **Row `source`** | `local-gsc-csv` |
+| **Rate limits** | n/a — reads a local file |
+
+### Inputs
+
+Tolerant of any CSV using Google Search Console-style headers.
+
+| Field | Required | Aliases | Notes |
+|---|---|---|---|
+| `query` | **yes** | `top queries`, `top_queries`, `search_term` | |
+| `page` | no | `landing_page`, `url`, `address` | becomes `source_url` |
+| `clicks` / `impressions` | no | — | int |
+| `ctr` | no | `click_through_rate` | normalised to a fraction |
+| `position` | no | `average_position`, `average position` | float |
+| `country` | no | `geo`, `location` | becomes `geo` |
+| `device` / `date` | no | — | preserved on `raw` |
+
+One CSV row becomes one `KeywordMetric`; the provider never aggregates.
+
+### Failure modes
+
+Same shape as `local-csv`: missing `--source` or a missing file raises
+`ProviderConfigurationError`; query-less rows are skipped with a
+`skipped_rows_without_query:<n>` warning.
+
+### Worked example
+
+```bash
+site-context-pipeline import-search-performance \
+    --client demo \
+    --provider local-gsc-csv \
+    --source examples/demo-client/input/search_console.csv \
+    --write
+```
+
+---
+
+## `local-serp-csv`
+
+| | |
+|---|---|
+| **Identifier & kind** | `local-serp-csv` · `SearchEvidenceProvider` |
+| **Status** | **live** |
+| **Install requirements** | base install |
+| **Output artifact** | `data/search_evidence.json` |
+| **Row `source`** | `local-serp-csv` |
+| **Rate limits** | n/a — the toolkit never scrapes SERPs |
+
+### Inputs
+
+Reads hand-curated SERP rows. The toolkit does **not** fetch search
+results; you supply the rows.
+
+| Field | Required | Aliases | Notes |
+|---|---|---|---|
+| `query` | **yes** | `keyword`, `search_term` | |
+| `rank` | no | `position` | int; `"1.0"` → `1` |
+| `title` / `url` / `snippet` | no | — | string |
+| `page_type` | no | `Page Type`, `type` | free-form label |
+
+Unknown columns are preserved in `raw`.
+
+### Failure modes
+
+Missing `--source` or a missing file raises
+`ProviderConfigurationError`. A CSV with no recognisable `query` column
+raises `ProviderConfigurationError` (the file is structurally wrong, not
+merely empty).
+
+### Worked example
+
+```bash
+site-context-pipeline import-search-evidence \
+    --client demo \
+    --provider local-serp-csv \
+    --source examples/demo-client/input/search_evidence.csv \
+    --write
+```
+
+---
+
+## `google-ads`
+
+| | |
+|---|---|
+| **Identifier & kind** | `google-ads` · `KeywordProvider` |
+| **Status** | **stub** (live adapter is [issue #16](https://github.com/OtShelniko/site-context-pipeline/issues/16)) |
+| **Install requirements** | will require the `[google-ads]` extra when live |
+| **Output artifact** | `data/keyword_metrics.json` (when live) |
+| **Row `source`** | `google-ads` |
+
+### Inputs (planned)
+
+The live adapter will call
+[`KeywordPlanIdeaService.GenerateKeywordIdeas`](https://developers.google.com/google-ads/api/docs/keyword-planning/generate-keyword-ideas)
+with config supplied via env vars and/or
+`<client>/config/google_ads.json`:
+
+| Config key | Purpose |
+|---|---|
+| `customer_id` | Google Ads customer ID |
+| `developer_token` | Google Ads developer token |
+| `refresh_token` | OAuth refresh token |
+| `client_id` / `client_secret` | OAuth client credentials |
+| `geo_target_constants` | e.g. `["geoTargetConstants/2840"]` |
+| `language_constant` | e.g. `"languageConstants/1000"` |
+| `seeds` | keyword seeds, URL seeds, or both |
+
+Credentials are read from the environment or a gitignored config file —
+**never** committed and never serialised into an artifact.
+
+### Failure modes
+
+In this release the stub always returns:
+
+```json
+{
+  "ok": false,
+  "provider": "google-ads",
+  "items": [],
+  "errors": ["not_configured"],
+  "metadata": {
+    "reason": "not_configured",
+    "suggestion": "Live Google Ads Keyword Planner access is not implemented in this release. For now, export keyword ideas as CSV and import with --provider local-csv."
+  }
+}
+```
+
+The CLI converts this into exit code `1` plus the JSON above. The stub
+never raises and never touches the network.
+
+### Rate limits (planned)
+
+The Google Ads API enforces per-developer-token operation quotas and
+applies `GoogleAdsException` with `RESOURCE_EXHAUSTED` when throttled.
+The live adapter will batch seed keywords per request and surface a
+`rate_limited` warning rather than retrying blindly.
+
+### Worked example (today)
+
+```bash
+# Returns not_configured + a suggestion; exits 1.
+site-context-pipeline import-keywords --client demo --provider google-ads
+```
+
+---
+
+## `google-search-console`
+
+| | |
+|---|---|
+| **Identifier & kind** | `google-search-console` · `SearchPerformanceProvider` |
+| **Status** | **stub** (live adapter is [issue #17](https://github.com/OtShelniko/site-context-pipeline/issues/17)) |
+| **Install requirements** | will require the `[gsc]` extra when live |
+| **Output artifact** | `data/search_performance.json` (when live) |
+| **Row `source`** | `google-search-console` |
+
+### Inputs (planned)
+
+The live adapter will call the
+[Search Analytics API](https://developers.google.com/webmaster-tools/v1/searchanalytics/query)
+with:
+
+| Config key | Purpose |
+|---|---|
+| `site_url` | verified property (`sc-domain:example.com` or a URL prefix) |
+| `credentials` | service-account JSON path or OAuth refresh-token bundle |
+| `date_range` | `{"start": "...", "end": "..."}` (ISO dates) |
+| `dimensions` | subset of `["query", "page", "country", "device", "date"]` |
+| `filters` | optional Search Analytics dimension filters |
+
+### Failure modes
+
+Identical shape to `google-ads`: the stub returns `ok=false`,
+`errors=["not_configured"]`, and a `metadata.suggestion` pointing at
+`local-gsc-csv`. Exit code `1`, no network, no raise.
+
+### Rate limits (planned)
+
+Search Analytics enforces per-site and per-project QPS limits and a
+daily query cap. The live adapter will page through results with the
+API's `rowLimit`/`startRow` and back off on `429`.
+
+### Worked example (today)
+
+```bash
+# Returns not_configured + a suggestion; exits 1.
+site-context-pipeline import-search-performance \
+    --client demo --provider google-search-console
+```
+
+---
+
+## Adding your own provider
+
+The eight-heading layout above is the template. To contribute a new
+adapter:
+
+1. Copy one of the entries above into this file as a starting point.
+2. Follow the step-by-step in
+   [Providers → How future providers should be added](providers.md#how-future-providers-should-be-added).
+3. Honour the
+   [provider safety rules](providers.md#provider-safety-rules):
+   no credentials in the repo, no required SDK in the base install,
+   no live network calls in tests, structured `not_configured` when
+   config is missing.
+
+Run `site-context-pipeline list-providers` to confirm your provider is
+registered and to see its live/stub status as JSON.

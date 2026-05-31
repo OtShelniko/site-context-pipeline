@@ -237,3 +237,8 @@ These rules apply to every present and future provider:
 | `local-serp-csv` | search_evidence | live | yes |
 
 Run `site-context-pipeline list-providers` to see the same list as JSON.
+
+> **Per-provider reference.** For a uniform, self-contained reference
+> on each shipped provider — config keys, input columns, failure
+> modes, rate limits, and a worked example — see
+> [Provider reference](provider-reference.md).
