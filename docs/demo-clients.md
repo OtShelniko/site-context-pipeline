@@ -1,8 +1,8 @@
 # Demo clients
 
-The toolkit ships two synthetic demo workspaces under `examples/`. They
-exist to exercise the full pipeline end-to-end without any real client
-data, and to act as concrete starting points for new users.
+The toolkit ships three synthetic demo workspaces under `examples/`.
+They exist to exercise the full pipeline end-to-end without any real
+client data, and to act as concrete starting points for new users.
 
 Both demos are completely synthetic. None of the URLs resolve; none of
 the keyword volumes or Search-Console rows correspond to any real
@@ -60,10 +60,41 @@ inheriting only one inlink, blog posts that already rank for
 informational queries but receive no inlinks from product or
 category pages.
 
+## `examples/demo-multilingual/` — three-language docs site
+
+The third demo, added in 0.4. A fictional task-automation SaaS
+"TaskFlow" publishing docs and marketing pages in three languages on
+`docs.example.org` with:
+
+- 14 pages across locale-prefixed trees (`/en/`, `/de/`, `/fr/`)
+- 12 internal links, including the language switcher from the root
+- The same logical page type expressed through localized slugs:
+  `pricing` ≡ `preise` ≡ `tarifs`; `guides` ≡ `anleitungen`
+- 9 keyword rows spanning three markets with distinct `geo`,
+  `language`, and `locale` values (`en-US`, `de-DE`, `fr-FR`)
+- 7 Search-Console rows across the three markets
+- 8 hand-curated SERP queries in three languages
+- A `config/classifier.json` that maps each localized slug to its
+  shared page type, and uses `allow_urls` to mark the three locale
+  roots as section hubs (`category`)
+
+Use this demo when you want to see how the toolkit handles:
+
+- locale-prefixed URL structures without any per-language code,
+- multiple URL patterns collapsing to one logical page type,
+- keyword and performance data that spans several markets in a
+  single workspace.
+
+The core is deliberately language-neutral: it classifies on URL
+structure and carries `geo` / `language` / `locale` straight through
+to the keyword artifact without interpreting them. A single workspace
+can hold a multi-market site without the pipeline needing to
+"understand" any particular language.
+
 ## Running either demo end-to-end
 
 Both demos use the same CLI commands. Substitute `<demo>` with
-`demo-client` or `demo-ecommerce`:
+`demo-client`, `demo-ecommerce`, or `demo-multilingual`:
 
 ```bash
 # Initialise a separate workspace per demo so they don't collide.

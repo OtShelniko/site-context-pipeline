@@ -1,0 +1,13 @@
+source_url,target_url,anchor_text
+https://docs.example.org/,https://docs.example.org/en/,English
+https://docs.example.org/,https://docs.example.org/de/,Deutsch
+https://docs.example.org/,https://docs.example.org/fr/,Français
+https://docs.example.org/en/,https://docs.example.org/en/guides/getting-started/,Getting started
+https://docs.example.org/en/,https://docs.example.org/en/guides/automations/,Automations
+https://docs.example.org/en/guides/getting-started/,https://docs.example.org/en/pricing/,See pricing
+https://docs.example.org/de/,https://docs.example.org/de/anleitungen/erste-schritte/,Erste Schritte
+https://docs.example.org/de/,https://docs.example.org/de/anleitungen/automatisierungen/,Automatisierungen
+https://docs.example.org/de/anleitungen/erste-schritte/,https://docs.example.org/de/preise/,Preise ansehen
+https://docs.example.org/fr/,https://docs.example.org/fr/guides/demarrage/,Démarrage
+https://docs.example.org/fr/guides/demarrage/,https://docs.example.org/fr/tarifs/,Voir les tarifs
+https://docs.example.org/blog/launch-notes/,https://docs.example.org/en/guides/getting-started/,getting started guide

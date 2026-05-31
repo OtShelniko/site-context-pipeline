@@ -1,0 +1,10 @@
+query,avg_monthly_searches,competition,geo,language,locale,source_url
+task automation software,5400,HIGH,US,en,en-US,https://docs.example.org/en/guides/automations/
+how to automate tasks,2700,MEDIUM,US,en,en-US,https://docs.example.org/en/guides/getting-started/
+taskflow pricing,1300,LOW,US,en,en-US,https://docs.example.org/en/pricing/
+aufgaben automatisieren,1900,MEDIUM,DE,de,de-DE,https://docs.example.org/de/anleitungen/automatisierungen/
+aufgabenverwaltung software,1400,MEDIUM,DE,de,de-DE,https://docs.example.org/de/anleitungen/erste-schritte/
+taskflow preise,480,LOW,DE,de,de-DE,https://docs.example.org/de/preise/
+automatisation des taches,1600,MEDIUM,FR,fr,fr-FR,https://docs.example.org/fr/guides/automatisations/
+logiciel gestion taches,1100,MEDIUM,FR,fr,fr-FR,https://docs.example.org/fr/guides/demarrage/
+taskflow tarifs,390,LOW,FR,fr,fr-FR,https://docs.example.org/fr/tarifs/

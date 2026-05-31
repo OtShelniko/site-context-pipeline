@@ -46,10 +46,15 @@ examples/demo-client/output/*.md
 examples/demo-ecommerce/data/*.json
 examples/demo-ecommerce/output/*.json
 examples/demo-ecommerce/output/*.md
+examples/demo-multilingual/data/*.json
+examples/demo-multilingual/output/*.json
+examples/demo-multilingual/output/*.md
 !examples/demo-client/data/.gitkeep
 !examples/demo-client/output/.gitkeep
 !examples/demo-ecommerce/data/.gitkeep
 !examples/demo-ecommerce/output/.gitkeep
+!examples/demo-multilingual/data/.gitkeep
+!examples/demo-multilingual/output/.gitkeep
 
 # Smoke-test workspaces
 _smoke/

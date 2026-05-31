@@ -1,0 +1,15 @@
+url,title,h1,status_code,word_count,inlinks_count,outlinks_count
+https://docs.example.org/,TaskFlow Docs,TaskFlow documentation,200,160,9,12
+https://docs.example.org/en/,TaskFlow — English,TaskFlow documentation,200,240,7,10
+https://docs.example.org/en/guides/getting-started/,Getting started,Getting started with TaskFlow,200,1280,3,6
+https://docs.example.org/en/guides/automations/,Automations guide,Build automations,200,1640,2,5
+https://docs.example.org/en/pricing/,Pricing,Plans and pricing,200,320,5,4
+https://docs.example.org/de/,TaskFlow — Deutsch,TaskFlow Dokumentation,200,230,6,9
+https://docs.example.org/de/anleitungen/erste-schritte/,Erste Schritte,Erste Schritte mit TaskFlow,200,1190,2,5
+https://docs.example.org/de/anleitungen/automatisierungen/,Automatisierungen,Automatisierungen erstellen,200,1510,1,4
+https://docs.example.org/de/preise/,Preise,Tarife und Preise,200,300,3,3
+https://docs.example.org/fr/,TaskFlow — Français,Documentation TaskFlow,200,225,5,8
+https://docs.example.org/fr/guides/demarrage/,Démarrage,Démarrer avec TaskFlow,200,1130,1,5
+https://docs.example.org/fr/guides/automatisations/,Automatisations,Créer des automatisations,200,1480,0,4
+https://docs.example.org/fr/tarifs/,Tarifs,Forfaits et tarifs,200,290,2,3
+https://docs.example.org/blog/launch-notes/,Launch notes,TaskFlow launch notes,200,640,1,3
