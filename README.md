@@ -21,7 +21,8 @@ adapters may carry vendor-specific names (e.g. `google-ads`,
 `google-search-console`) — see [Provider philosophy](#provider-philosophy)
 and [`docs/providers.md`](./docs/providers.md) for the rules.
 
-> **Documentation:** [Architecture](./docs/architecture.md) ·
+> **Documentation:** [Tutorial](./docs/tutorial.md) ·
+> [Architecture](./docs/architecture.md) ·
 > [Providers](./docs/providers.md) ·
 > [Artifacts](./docs/artifacts.md) ·
 > [Roadmap](./ROADMAP.md) ·
@@ -175,6 +176,11 @@ without it, the command runs as a dry-run and prints the planned writes.
 | `inspect` | Reports which expected files exist. Useful for CI scripts. | The whole workspace | nothing |
 
 All commands print one JSON document on stdout, so you can pipe them.
+
+> **Looking for a longer walkthrough?** See
+> [`docs/tutorial.md`](./docs/tutorial.md) — a 10-minute end-to-end
+> tutorial that goes from "I have a sitemap" to a finished context
+> pack, with explanations for every step.
 
 ## Provider philosophy
 
