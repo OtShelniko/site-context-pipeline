@@ -47,7 +47,7 @@ jobs:
         # Only upload once per CI run (from the 3.12 job) so we don't
         # double-count. Tokenless OIDC works for public repos.
         if: matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         with:
           files: ./coverage.xml
           fail_ci_if_error: false
