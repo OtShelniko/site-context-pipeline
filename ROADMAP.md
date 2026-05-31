@@ -49,12 +49,10 @@ Goal: make it easy to feed data in without hand-rolling CSVs.
   the canonical Screaming Frog `internal_*.csv` and
   `*_inlinks/*_outlinks.csv` exports directly, without a manual reshape
   step. Tolerates the legacy column layout (SF v15-17).
-- **Stronger configurable page classification** — promote the current
-  built-in pattern list to a fully data-driven config:
-  - per-client rule files in `config/classifier.json` with priorities,
-  - support for negation patterns,
-  - support for explicit URL allowlists / denylists per page type,
-  - reason strings remain auditable in `classification_reason`.
+- **Stronger configurable page classification** ✅ *(merged in
+  `Unreleased`)* — `config/classifier.json` now supports priorities,
+  negation patterns, and explicit URL allow-lists per page type. See
+  [`docs/classifier.md`](./docs/classifier.md).
 - **Improved context-pack templates** — make the Markdown sections
   customisable via simple template strings in
   `config/context_pack.json`. Defaults remain offline-safe and

@@ -3,12 +3,23 @@
 The classifier is intentionally simple and language-neutral. It reads two
 optional config files from ``<client>/config/``:
 
-* ``classifier.json`` — overrides the default URL-pattern rules.
+* ``classifier.json`` — overrides the default URL-pattern rules. Two
+  schemas are supported:
+
+  - **Legacy (still works):** a flat list of
+    ``{"page_type": "...", "pattern": "..."}`` dicts. First match wins.
+
+  - **Extended:** the same dict can also carry ``priority`` (lower
+    = earlier; ties broken by list order), ``exclude_patterns`` (a list
+    of patterns that block the rule even when ``pattern`` matches), and
+    ``allow_urls`` (an explicit list of URLs that *always* match this
+    rule, regardless of ``pattern``).
+
 * ``commercial_urls.json`` — explicit URL list to mark as ``landing``.
 
-If neither file is present, a built-in rule set is used. Rules are evaluated
-in priority order; the first match wins. The result records which rule fired
-in ``classification_reason`` so the output is auditable.
+If neither file is present, a built-in rule set is used. The result
+records which rule fired in ``classification_reason`` so the output is
+auditable.
 
 No site-specific or client-specific defaults are baked in.
 """
@@ -18,6 +29,7 @@ from __future__ import annotations
 import csv
 import fnmatch
 import json
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse, urlunparse
@@ -32,9 +44,33 @@ from .importers import (
 )
 from .schemas import InventoryItem, PageType
 
-# Default rule set. Each rule is a (page_type, marker) pair. The marker is
-# matched against the URL path with ``fnmatch`` semantics (so ``*`` works).
-# Order matters: the first matching rule wins.
+# All page types the classifier may emit. Used to validate config-supplied
+# rules before they reach ``classify_url``.
+_VALID_PAGE_TYPES: frozenset[str] = frozenset(
+    {"home", "service", "blog", "category", "landing", "other"}
+)
+
+
+@dataclass(frozen=True)
+class ClassifierRule:
+    """One configurable URL-classification rule.
+
+    ``priority`` is sorted ascending — the lowest number wins. Ties
+    are broken by the rule's original position in the config (so
+    re-ordering the JSON file is meaningful even when priorities are
+    equal). The defaults match the order of the built-in rule set.
+    """
+
+    page_type: PageType
+    pattern: str
+    priority: int = 100
+    exclude_patterns: tuple[str, ...] = ()
+    allow_urls: frozenset[str] = field(default_factory=frozenset)
+
+
+# Default rule set. Each rule is a (page_type, pattern) pair; we wrap
+# them into ``ClassifierRule`` instances at load time so the built-in
+# and the user-supplied paths share one execution path.
 _DEFAULT_PATTERN_RULES: list[tuple[PageType, str]] = [
     ("blog", "*/blog/*"),
     ("blog", "*/news/*"),
@@ -93,7 +129,7 @@ def build_inventory(
     source_path = _resolve_source(source, paths)
     rows, detected_format, parse_warnings = _read_source(source_path, source_format)
 
-    classifier_rules, classifier_source = _load_classifier_rules(paths)
+    classifier_rules, classifier_source, classifier_warnings = _load_classifier_rules(paths)
     commercial_urls = _load_commercial_urls(paths)
 
     items: list[InventoryItem] = []
@@ -145,6 +181,7 @@ def build_inventory(
         warnings.append(f"skipped_rows:{len(skipped)}")
     if classifier_source:
         warnings.append(f"classifier_source:{classifier_source}")
+    warnings.extend(classifier_warnings)
 
     result: dict[str, Any] = {
         "planned_writes": [str(inventory_path)],
@@ -186,7 +223,7 @@ def classify_url(
     url: str,
     *,
     commercial_urls: set[str],
-    rules: list[tuple[PageType, str]],
+    rules: list[ClassifierRule] | list[tuple[PageType, str]],
 ) -> tuple[PageType, str]:
     """Return ``(page_type, classification_reason)`` for one URL.
 
@@ -194,8 +231,16 @@ def classify_url(
 
     1. Explicit commercial URL list (highest authority).
     2. Home page check (path is ``/`` or empty).
-    3. URL-pattern rules from config (or built-in defaults).
-    4. Fallback to ``other``.
+    3. Per-rule ``allow_urls`` — if the URL is on any rule's allow list,
+       that rule wins regardless of pattern.
+    4. URL-pattern rules from config (or built-in defaults), evaluated
+       in priority order. Each rule's ``exclude_patterns`` can block
+       the match.
+    5. Fallback to ``other``.
+
+    The function accepts both the new ``ClassifierRule`` objects and
+    legacy ``(page_type, pattern)`` tuples so callers that already use
+    the simple form keep working.
     """
     if url in commercial_urls:
         return "landing", "matched_commercial_url_list"
@@ -205,12 +250,34 @@ def classify_url(
     if path in {"/", ""}:
         return "home", "matched_home_path"
 
+    normalised_rules = [_coerce_rule(rule) for rule in rules]
+
+    # 3. allow_urls take precedence over patterns; the first allow-match
+    # in priority order wins so users can layer override rules.
+    for rule in sorted(normalised_rules, key=lambda r: r.priority):
+        if url in rule.allow_urls:
+            return rule.page_type, f"matched_allow_url:{rule.page_type}"
+
+    # 4. pattern rules with optional negation.
     lowered = path.lower()
-    for page_type, pattern in rules:
-        if _match_path_pattern(lowered, pattern):
-            return page_type, f"matched_pattern:{pattern}"
+    for rule in sorted(normalised_rules, key=lambda r: r.priority):
+        if not _match_path_pattern(lowered, rule.pattern):
+            continue
+        if any(_match_path_pattern(lowered, ex) for ex in rule.exclude_patterns):
+            continue
+        return rule.page_type, f"matched_pattern:{rule.pattern}"
 
     return "other", "fallback_other"
+
+
+def _coerce_rule(
+    rule: ClassifierRule | tuple[PageType, str],
+) -> ClassifierRule:
+    """Accept legacy 2-tuples so old callers keep working."""
+    if isinstance(rule, ClassifierRule):
+        return rule
+    page_type, pattern = rule
+    return ClassifierRule(page_type=page_type, pattern=pattern)
 
 
 def _match_path_pattern(path: str, pattern: str) -> bool:
@@ -368,29 +435,108 @@ def _first_present(row: dict[str, Any], names: list[str]) -> Any:
 
 def _load_classifier_rules(
     paths: ClientPaths,
-) -> tuple[list[tuple[PageType, str]], str | None]:
-    """Read user-supplied rules or fall back to built-in defaults."""
+) -> tuple[list[ClassifierRule], str | None, list[str]]:
+    """Read user-supplied rules or fall back to built-in defaults.
+
+    Returns ``(rules, source, warnings)`` where:
+      * ``rules`` is the parsed rule list (built-in defaults if the file
+        is absent / unreadable / empty);
+      * ``source`` is a short marker for diagnostics
+        (``"classifier_json_invalid"``, the file path, ``None``, etc.);
+      * ``warnings`` lists structural problems we surfaced (an unknown
+        ``page_type``, a non-string pattern, etc.) so the inventory
+        builder can include them in the artifact.
+    """
     config_path = paths.config / "classifier.json"
     if not config_path.exists():
-        return list(_DEFAULT_PATTERN_RULES), None
-    raw = read_json(config_path, None)
+        return _default_rules(), None, []
+    try:
+        raw = read_json(config_path, None)
+    except (OSError, json.JSONDecodeError):
+        return _default_rules(), "classifier_json_invalid", ["classifier_json_invalid"]
     if not isinstance(raw, dict):
-        return list(_DEFAULT_PATTERN_RULES), "classifier_json_invalid"
+        return _default_rules(), "classifier_json_invalid", ["classifier_json_invalid"]
     rules_raw = raw.get("rules") or []
-    rules: list[tuple[PageType, str]] = []
-    for entry in rules_raw:
+
+    rules: list[ClassifierRule] = []
+    warnings: list[str] = []
+    for index, entry in enumerate(rules_raw):
         if not isinstance(entry, dict):
+            warnings.append(f"classifier_rule_not_object:index={index}")
             continue
         page_type = entry.get("page_type")
         pattern = entry.get("pattern")
         if not page_type or not pattern:
+            warnings.append(f"classifier_rule_missing_fields:index={index}")
             continue
-        if page_type not in {"home", "service", "blog", "category", "landing", "other"}:
+        if page_type not in _VALID_PAGE_TYPES:
+            warnings.append(
+                f"classifier_rule_invalid_page_type:index={index},value={page_type}"
+            )
             continue
-        rules.append((page_type, str(pattern)))
+        priority = entry.get("priority", 100)
+        try:
+            priority_int = int(priority)
+        except (TypeError, ValueError):
+            warnings.append(f"classifier_rule_invalid_priority:index={index}")
+            priority_int = 100
+        # Tie-breaker: append the index as a fractional component so the
+        # original list order is preserved when priorities collide.
+        # ``priority`` stays an int on the dataclass; we sort with the
+        # tuple ``(priority, index)`` outside, but only for legacy
+        # callers — here we encode the index into the priority itself.
+        priority_with_index = priority_int * 1000 + index
+
+        exclude_raw = entry.get("exclude_patterns") or []
+        exclude_patterns: tuple[str, ...]
+        if isinstance(exclude_raw, list):
+            exclude_patterns = tuple(
+                str(p) for p in exclude_raw if isinstance(p, str) and p.strip()
+            )
+        else:
+            warnings.append(f"classifier_rule_invalid_exclude_patterns:index={index}")
+            exclude_patterns = ()
+
+        allow_raw = entry.get("allow_urls") or []
+        if isinstance(allow_raw, list):
+            allow_urls = frozenset(
+                str(u).strip() for u in allow_raw if isinstance(u, str) and u.strip()
+            )
+        else:
+            warnings.append(f"classifier_rule_invalid_allow_urls:index={index}")
+            allow_urls = frozenset()
+
+        rules.append(
+            ClassifierRule(
+                page_type=page_type,
+                pattern=str(pattern),
+                priority=priority_with_index,
+                exclude_patterns=exclude_patterns,
+                allow_urls=allow_urls,
+            )
+        )
+
     if not rules:
-        return list(_DEFAULT_PATTERN_RULES), "classifier_json_empty_using_defaults"
-    return rules, str(config_path)
+        warnings.append("classifier_json_empty_using_defaults")
+        return _default_rules(), "classifier_json_empty_using_defaults", warnings
+
+    return rules, str(config_path), warnings
+
+
+def _default_rules() -> list[ClassifierRule]:
+    """Materialise the built-in patterns as ``ClassifierRule`` objects.
+
+    The priority here is the index in ``_DEFAULT_PATTERN_RULES`` so the
+    legacy first-match-wins ordering is preserved.
+    """
+    return [
+        ClassifierRule(
+            page_type=page_type,
+            pattern=pattern,
+            priority=index,
+        )
+        for index, (page_type, pattern) in enumerate(_DEFAULT_PATTERN_RULES)
+    ]
 
 
 def _load_commercial_urls(paths: ClientPaths) -> set[str]:

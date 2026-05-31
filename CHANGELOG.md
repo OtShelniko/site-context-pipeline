@@ -7,7 +7,19 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet. See [`ROADMAP.md`](./ROADMAP.md) for what is planned.
+### Added
+
+- **Configurable classifier rules** (#4) — `config/classifier.json`
+  now supports per-rule `priority`, `exclude_patterns` (negation),
+  and `allow_urls` (forced matches) on top of the existing
+  `page_type` / `pattern` keys. The legacy two-key schema keeps
+  working unchanged. Invalid rules surface as named warnings
+  (`classifier_rule_invalid_page_type`, etc.) in the inventory output.
+- New module: `inventory.ClassifierRule` dataclass; `classify_url`
+  accepts both `ClassifierRule` instances and legacy
+  `(page_type, pattern)` tuples for back-compat.
+- Documentation: [`docs/classifier.md`](./docs/classifier.md)
+  describes the schema, resolution order, and warning tokens.
 
 ## [0.2.0] — 2026-05-31
 
