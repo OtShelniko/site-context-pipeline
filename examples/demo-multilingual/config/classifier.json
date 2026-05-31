@@ -1,0 +1,45 @@
+{
+  "_comment": "Multilingual docs-site rules. The same logical page type maps to several localized URL patterns (pricing == preise == tarifs; guides == anleitungen). Lower priority wins ties. The locale roots (/en/, /de/, /fr/) are section hubs, classified via allow_urls so they don't get swept up by the guide patterns.",
+  "rules": [
+    {
+      "page_type": "landing",
+      "pattern": "*/pricing*",
+      "priority": 10
+    },
+    {
+      "page_type": "landing",
+      "pattern": "*/preise*",
+      "priority": 10
+    },
+    {
+      "page_type": "landing",
+      "pattern": "*/tarifs*",
+      "priority": 10
+    },
+    {
+      "page_type": "blog",
+      "pattern": "*/guides/*",
+      "priority": 20
+    },
+    {
+      "page_type": "blog",
+      "pattern": "*/anleitungen/*",
+      "priority": 20
+    },
+    {
+      "page_type": "blog",
+      "pattern": "*/blog/*",
+      "priority": 20
+    },
+    {
+      "page_type": "category",
+      "pattern": "*",
+      "priority": 90,
+      "allow_urls": [
+        "https://docs.example.org/en/",
+        "https://docs.example.org/de/",
+        "https://docs.example.org/fr/"
+      ]
+    }
+  ]
+}

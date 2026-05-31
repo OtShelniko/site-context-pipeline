@@ -9,6 +9,19 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Third demo client (`examples/demo-multilingual/`)** — synthetic
+  three-language docs site for a fictional SaaS "TaskFlow" on
+  `docs.example.org`. 14 pages across locale-prefixed trees
+  (`/en/`, `/de/`, `/fr/`), 12 internal links including the language
+  switcher, the same logical page type expressed through localized
+  slugs (`pricing` ≡ `preise` ≡ `tarifs`; `guides` ≡ `anleitungen`),
+  and keyword/Search-Console rows spanning three markets with
+  distinct `geo` / `language` / `locale` values. Demonstrates that
+  the language-neutral core classifies on URL structure alone and
+  carries market metadata through untouched. New
+  `tests/test_demo_multilingual.py` (3 tests) validates the
+  localized-slug classification and per-market metadata preservation.
+  `docs/demo-clients.md` documents the demo; test count 168 → 171.
 - **Release drafter** workflow auto-maintains a draft release on
   every push to `main` and PR event. Categorises PRs by
   conventional-commit prefix (`feat:` / `fix:` / `docs:` / etc.) and

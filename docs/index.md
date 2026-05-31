@@ -55,9 +55,10 @@ brief or a draft.
 
     ---
 
-    Two synthetic workspaces shipped under `examples/`: a small
-    services site and a coffee-equipment storefront. Concrete
-    starting points that exercise different IAs.
+    Three synthetic workspaces shipped under `examples/`: a small
+    services site, a coffee-equipment storefront, and a
+    three-language docs site. Concrete starting points that exercise
+    different IAs.
 
 - :material-sitemap:{ .lg .middle } **[Architecture](architecture.md)**
 
