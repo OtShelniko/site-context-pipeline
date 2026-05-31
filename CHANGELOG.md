@@ -9,6 +9,25 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Property-based tests with Hypothesis.** New
+  `tests/test_property_based.py` adds 19 property tests covering URL
+  normalisation, glob-style path matching, CSV header normalisation,
+  integer/float/CTR parsing, and `classify_url`. Each test asserts
+  invariants over randomly-generated inputs rather than concrete
+  values. `hypothesis>=6.100` joined the `[dev]` extra. Test count
+  rose from 147 to 166.
+
+### Fixed
+
+- `_first_int` now treats `inf` / `-inf` and unrepresentably-large
+  floats as missing rather than raising `OverflowError`.
+- `_first_ratio` (CTR parser) now treats `NaN` and `±inf` as missing
+  rather than returning them as a valid ratio.
+- `_first_float` now treats `NaN` and `±inf` as missing.
+
+  All three were latent bugs surfaced by Hypothesis; example-based
+  tests had not exercised those inputs.
+
 - **"How this compares" doc** — new
   [`docs/comparison.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/comparison.md)
   is an honest, opinionated comparison vs Screaming Frog, Sitebulb,
