@@ -9,6 +9,15 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **"How this compares" doc** — new
+  [`docs/comparison.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/comparison.md)
+  is an honest, opinionated comparison vs Screaming Frog, Sitebulb,
+  ContentKing, Ahrefs/Semrush, and rolling-your-own scripts.
+  Includes a capability matrix, where this toolkit is and isn't the
+  right answer, common combinations (SF → this; GSC export → this;
+  Ahrefs/Semrush export → this), and a "why not just write a
+  script" section. Linked from the README, the mkdocs nav, and the
+  index card grid.
 - **Recipes documentation** — new
   [`docs/recipes.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/recipes.md)
   ships nine end-to-end workflows that show the toolkit in real use:

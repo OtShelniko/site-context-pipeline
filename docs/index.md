@@ -43,6 +43,14 @@ brief or a draft.
     pre-rebrand snapshots, gating drafts in CI, handing the pack to
     an LLM with citations.
 
+- :material-compare:{ .lg .middle } **[How this compares](comparison.md)**
+
+    ---
+
+    Honest comparison vs Screaming Frog, Sitebulb, ContentKing, and
+    rolling your own script. Where this toolkit is the right answer
+    and where it isn't.
+
 - :material-sitemap:{ .lg .middle } **[Architecture](architecture.md)**
 
     ---

@@ -30,6 +30,7 @@ and [`docs/providers.md`](./docs/providers.md) for the rules.
 > **<https://otshelniko.github.io/site-context-pipeline/>**, with
 > [Tutorial](./docs/tutorial.md) ·
 > [Recipes](./docs/recipes.md) ·
+> [How this compares](./docs/comparison.md) ·
 > [Architecture](./docs/architecture.md) ·
 > [Providers](./docs/providers.md) ·
 > [Artifacts](./docs/artifacts.md) ·
