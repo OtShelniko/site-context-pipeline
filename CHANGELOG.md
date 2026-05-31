@@ -7,7 +7,23 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet. See [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md) for what is planned.
+### Added
+
+- **Edge-case test coverage.** New `tests/test_coverage_edge_cases.py`
+  adds 57 narrow tests for the error and fallback branches that the
+  end-to-end tests skip: source-reader format selection and failure
+  paths (`inventory._read_source`, `link_graph._read_source`),
+  classifier-rule validation warnings (invalid `page_type`,
+  non-object rules, bad `priority` / `exclude_patterns` / `allow_urls`,
+  empty rule lists), the small coercion helpers (`_coerce_url`,
+  `_string_or_none`, `_int_or_none`, `_int_or_zero`,
+  `_normalise_optional`), the `local-gsc-csv` provider's
+  missing-source / skip-row branches, and JSON-edge link-graph builds
+  with self-loops and inventory fallback counts. Overall line coverage
+  rose from 86.2 % to 89.4 %; `inventory.py` 74.5 % → 87.8 %,
+  `link_graph.py` 65.3 % → 76.9 %, `local_search_console_csv.py`
+  73.4 % → 83.0 %. Test count grew from 171 to 228. No production code
+  changes.
 
 ## [0.4.0] — 2026-06-01
 
