@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any
 
 from . import __version__
-from .clients import ClientPaths, get_client_paths, init_client, write_json
+from .clients import ClientPaths, get_client_paths, init_client, read_json, write_json
 from .context_pack import build_context_pack
 from .inventory import build_inventory
 from .link_graph import build_link_graph
@@ -35,6 +35,7 @@ from .providers import (
     get_search_evidence_provider,
     get_search_performance_provider,
 )
+from .qa import analyse_draft_file
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -64,6 +65,8 @@ def main(argv: list[str] | None = None) -> int:
         payload = _run_import_search_performance(paths, args)
     elif args.command == "import-search-evidence":
         payload = _run_import_search_evidence(paths, args)
+    elif args.command == "qa-draft":
+        payload = _run_qa_draft(paths, args)
     else:  # pragma: no cover — argparse guards this
         parser.error(f"unknown command: {args.command}")
         return 2
@@ -233,6 +236,32 @@ def _build_parser() -> argparse.ArgumentParser:
         help="List available keyword and search-performance providers",
     )
 
+    qa = sub.add_parser(
+        "qa-draft",
+        parents=[common_client],
+        help=(
+            "Run deterministic QA over a Markdown draft. Reads the draft "
+            "and (when present) the client's content_inventory to check "
+            "internal-link sanity. With --write, persists a JSON report "
+            "to <client>/output/qa_reports/<slug>.qa.json."
+        ),
+    )
+    qa.add_argument(
+        "--draft",
+        required=True,
+        help="Path to the Markdown draft to check.",
+    )
+    qa.add_argument(
+        "--keyphrase",
+        default=None,
+        help="Override the YAML frontmatter `keyphrase:` value.",
+    )
+    qa.add_argument(
+        "--slug",
+        default=None,
+        help="Override the YAML frontmatter `slug:` value.",
+    )
+
     return parser
 
 
@@ -350,6 +379,56 @@ def _run_import_search_evidence(
         getter=get_search_evidence_provider,
         target_path=paths.data / "search_evidence.json",
     )
+
+
+def _run_qa_draft(paths: ClientPaths, args: argparse.Namespace) -> dict[str, Any]:
+    """Run QA over a Markdown draft, optionally persisting the report."""
+    payload = _base_payload(paths, "qa-draft", dry_run=not args.write)
+    draft_path = Path(args.draft)
+    if not draft_path.exists():
+        payload["ok"] = False
+        payload["errors"] = [f"draft_not_found:{draft_path}"]
+        return payload
+
+    inventory_urls: set[str] = set()
+    inventory_path = paths.data / "content_inventory.json"
+    inventory_raw = read_json(inventory_path, [])
+    if isinstance(inventory_raw, list):
+        for item in inventory_raw:
+            if isinstance(item, dict) and isinstance(item.get("url"), str):
+                inventory_urls.add(item["url"])
+
+    try:
+        report = analyse_draft_file(
+            draft_path,
+            keyphrase=args.keyphrase,
+            slug=args.slug,
+            inventory_urls=inventory_urls,
+        )
+    except ValueError as error:
+        payload["ok"] = False
+        payload["errors"] = [str(error)]
+        return payload
+
+    payload["data"] = {
+        "draft_path": str(draft_path),
+        "keyphrase": report.keyphrase,
+        "slug": report.slug,
+        "overall_level": report.overall_level,
+        "report": report.to_dict(),
+    }
+
+    target = paths.output / "qa_reports" / (
+        (Path(report.slug or draft_path.stem).name) + ".qa.json"
+    )
+    payload["planned_writes"] = [str(target)]
+    if args.write:
+        write_json(target, report.to_dict())
+        payload["written_files"] = [str(target)]
+        payload["write_performed"] = True
+    if report.overall_level == "red":
+        payload["ok"] = False
+    return payload
 
 
 def _run_provider(
