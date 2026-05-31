@@ -5,6 +5,10 @@
 > workflows.
 
 [![CI](https://github.com/OtShelniko/site-context-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/OtShelniko/site-context-pipeline/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/site-context-pipeline.svg)](https://pypi.org/project/site-context-pipeline/)
+[![Python versions](https://img.shields.io/pypi/pyversions/site-context-pipeline.svg)](https://pypi.org/project/site-context-pipeline/)
+[![Downloads](https://static.pepy.tech/badge/site-context-pipeline/month)](https://pepy.tech/project/site-context-pipeline)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 `site-context-pipeline` is a small, dependency-free Python CLI that turns
 the boring-but-essential facts about a website into a stable, machine- and
@@ -29,6 +33,64 @@ and [`docs/providers.md`](./docs/providers.md) for the rules.
 > [QA](./docs/qa.md) ·
 > [Roadmap](./ROADMAP.md) ·
 > [Changelog](./CHANGELOG.md)
+
+## What you get out
+
+The pipeline emits a single Markdown digest plus a JSON twin. Below is
+a real, trimmed excerpt of `output/agent_context_pack.md` produced
+from the synthetic `examples/demo-client/` fixtures — no hand-editing,
+no LLM, fully reproducible from the workspace.
+
+```markdown
+# Agent context pack — preview
+
+## Summary
+
+- page_count: 8
+- edge_count: 6
+- keyword_metrics_count: 6
+- search_performance_rows: 6
+
+### Page-type breakdown
+
+- blog: 2
+- home: 1
+- landing: 1
+- service: 3
+- other: 1
+
+## Opportunities
+
+### Top keyword opportunities
+
+- local delivery service — volume=3600 — source: local-csv
+- delivery cost guide   — volume=2400 — source: local-csv
+- local delivery planning — volume=1900 — source: local-csv
+
+### Pages with impressions but weak CTR
+
+- delivery cost guide → /blog/delivery-cost-guide/
+  impressions=2200, ctr=0.82%, position=18.6
+
+### Pages with rankings but weak internal support
+
+- /blog/how-to-plan-delivery/ — best position 12.4
+  for "local delivery planning", impressions=2490, zero_inlinks
+
+## What competitors do
+
+### delivery cost guide
+
+- #1 How Delivery Costs Work — competitor-a.example  (article)
+- #2 Delivery Pricing Calculator — competitor-b.example (calculator)
+- #3 Cost of Last-Mile Delivery — competitor-d.example (article)
+```
+
+The full pack also includes per-page-type listings, classification
+reasons, the project-notes block, and a `sources` map that records
+which artifact every fact came from. Hand this to a reviewer or to an
+LLM and they can produce a brief without guessing what your site
+already covers.
 
 ## What this project is
 
