@@ -55,6 +55,25 @@ pre-commit install                  # one-time hook install
 pre-commit run --all-files          # optional sweep before opening a PR
 ```
 
+## Performance benchmark
+
+A budgeted performance test (`tests/test_perf_benchmark.py`) runs on
+every CI invocation at a small synthetic scale (2,000 URLs) to catch
+algorithmic regressions — an accidental O(n²) join would blow the
+wall-clock budget on any runner. Scale it up locally with an env var:
+
+```bash
+SCP_PERF_URLS=50000 pytest tests/test_perf_benchmark.py -v
+```
+
+For ad-hoc profiling at realistic scale, the standalone
+`scripts/perf_benchmark.py` generates a synthetic site and prints
+per-stage timings:
+
+```bash
+python scripts/perf_benchmark.py --urls 50000
+```
+
 ## Filing issues
 
 When reporting a bug, please include:
