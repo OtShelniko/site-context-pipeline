@@ -252,43 +252,70 @@ site-context-pipeline import-keywords \
 | | |
 |---|---|
 | **Identifier & kind** | `google-search-console` · `SearchPerformanceProvider` |
-| **Status** | **stub** (live adapter is [issue #17](https://github.com/OtShelniko/site-context-pipeline/issues/17)) |
-| **Install requirements** | will require the `[gsc]` extra when live |
-| **Output artifact** | `data/search_performance.json` (when live) |
+| **Status** | **live (opt-in)** — requires the `[gsc]` extra and credentials |
+| **Install requirements** | `pip install "site-context-pipeline[gsc]"` |
+| **Output artifact** | `data/search_performance.json` |
 | **Row `source`** | `google-search-console` |
 
-### Inputs (planned)
+### Inputs
 
-The live adapter will call the
+The adapter calls the
 [Search Analytics API](https://developers.google.com/webmaster-tools/v1/searchanalytics/query)
-with:
+with config supplied via `--config <client>/config/google_search_console.json`
+(gitignored):
 
-| Config key | Purpose |
-|---|---|
-| `site_url` | verified property (`sc-domain:example.com` or a URL prefix) |
-| `credentials` | service-account JSON path or OAuth refresh-token bundle |
-| `date_range` | `{"start": "...", "end": "..."}` (ISO dates) |
-| `dimensions` | subset of `["query", "page", "country", "device", "date"]` |
-| `filters` | optional Search Analytics dimension filters |
+| Config key | Required | Purpose |
+|---|---|---|
+| `site_url` | **yes** | verified property (`sc-domain:example.com` or a URL prefix) |
+| `credentials_path` | **yes** | service-account JSON file path |
+| `start_date` / `end_date` | **yes** | ISO date range |
+| `dimensions` | no | subset of `query`/`page`/`country`/`device`/`date`/`searchAppearance`; must include `query`; default `["query", "page"]` |
+| `row_limit` | no | 1–25000; default 1000 (clamped to the API cap) |
+
+Credentials are read from the service-account file — **never**
+committed, never logged, never serialised into an artifact.
+
+### Output
+
+One `KeywordMetric` per Search Analytics row: `query`, `source_url`
+(from the `page` dimension), `geo` (from `country`), `impressions`,
+`clicks`, `ctr` (already a fraction), `position`, and any extra
+dimensions (`device`, `date`, `searchAppearance`) preserved in `raw`.
+`source` is `google-search-console`.
 
 ### Failure modes
 
-Identical shape to `google-ads`: the stub returns `ok=false`,
-`errors=["not_configured"]`, and a `metadata.suggestion` pointing at
-`local-gsc-csv`. Exit code `1`, no network, no raise.
+| Condition | Behaviour |
+|---|---|
+| no `--config` / empty config | `not_configured` result (`ok=false`, exit 1), points at `local-gsc-csv` |
+| config present but missing a required key | raises `ProviderConfigurationError` naming the keys |
+| `dimensions` without `query` or with an unknown value | raises `ProviderConfigurationError` |
+| `[gsc]` extra not installed | `missing_dependency` result (`ok=false`, exit 1) |
 
-### Rate limits (planned)
+The adapter never makes a network call until a complete config is
+supplied, and never imports the Google client libraries at module load.
 
-Search Analytics enforces per-site and per-project QPS limits and a
-daily query cap. The live adapter will page through results with the
-API's `rowLimit`/`startRow` and back off on `429`.
+### Rate limits
 
-### Worked example (today)
+Search Analytics enforces per-site and per-project QPS limits plus a
+daily query cap. `row_limit` is clamped to the API's 25000-row maximum
+per request; for larger pulls, page by date range. The adapter sends a
+single `query` request per invocation.
+
+### Worked example
 
 ```bash
-# Returns not_configured + a suggestion; exits 1.
+# Offline: returns not_configured + a suggestion, exits 1.
 site-context-pipeline import-search-performance \
     --client demo --provider google-search-console
+
+# Live (requires the extra + a credentials file):
+pip install "site-context-pipeline[gsc]"
+site-context-pipeline import-search-performance \
+    --client demo \
+    --provider google-search-console \
+    --config clients/demo/config/google_search_console.json \
+    --write
 ```
 
 ---
