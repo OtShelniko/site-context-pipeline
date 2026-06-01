@@ -4,7 +4,7 @@
 # "InvalidDistribution: '2.5' is not a valid metadata version". 1.26.x emits
 # 2.3, which uploads cleanly. Lift this ceiling once the publish action
 # ships a twine that accepts 2.5.
-requires = ["hatchling>=1.18,<1.27"]
+requires = ["hatchling>=1.18,<1.30"]
 build-backend = "hatchling.build"
 
 [project]
