@@ -52,8 +52,9 @@ _PROVIDER_DESCRIPTIONS: dict[str, str] = {
         "Performance CSV export. Offline."
     ),
     GoogleSearchConsoleProvider.provider_name: (
-        "Stub for live Google Search Console access. Returns "
-        "not_configured in this release; export CSV and use local-gsc-csv."
+        "Live Google Search Console adapter (opt-in). Needs the [gsc] "
+        "extra and credentials via --config; returns not_configured "
+        "otherwise. Offline-safe by default."
     ),
     LocalSearchEvidenceCsvProvider.provider_name: (
         "Read hand-curated SERP-evidence rows (query, rank, title, url, "
@@ -133,10 +134,13 @@ def _is_live(name: str) -> bool:
     ``google-ads`` is live but opt-in: it does real work once the
     ``[google-ads]`` extra is installed and credentials are supplied,
     and degrades to a structured ``not_configured`` result otherwise.
+    The same applies to ``google-search-console`` with the ``[gsc]``
+    extra.
     """
     return name in {
         LocalKeywordCsvProvider.provider_name,
         LocalSearchConsoleCsvProvider.provider_name,
         LocalSearchEvidenceCsvProvider.provider_name,
         GoogleAdsKeywordPlannerProvider.provider_name,
+        GoogleSearchConsoleProvider.provider_name,
     }

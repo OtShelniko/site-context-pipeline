@@ -9,6 +9,25 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Live Google Search Console adapter** ([#17]) — the
+  `google-search-console` provider is now a working opt-in adapter
+  rather than a stub. With `pip install "site-context-pipeline[gsc]"`
+  and a config block passed via `--config` (`site_url`,
+  `credentials_path`, `start_date`, `end_date`, optional `dimensions`
+  / `row_limit`), it calls the Search Analytics
+  `searchanalytics.query` endpoint and emits `KeywordMetric` rows
+  (`query`, `source_url`, `geo`, `impressions`, `clicks`, `ctr`,
+  `position`, extra dimensions in `raw`). The Google client libraries
+  are imported lazily inside the adapter so the base install keeps
+  zero runtime dependencies; credentials are never logged or
+  serialised. Missing config → `not_configured`; missing extra →
+  `missing_dependency`; malformed config (missing keys, bad
+  `dimensions`) → `ProviderConfigurationError`. Dimensions are
+  validated (must include `query`) and `row_limit` is clamped to the
+  API's 25000 cap. Mapping and validation logic is fully unit-tested
+  with fakes (no SDK, no network); 26 new tests in
+  `tests/test_gsc_adapter.py`. New `[gsc]` optional extra in
+  `pyproject.toml`. Test count 260 → 286.
 - **Live Google Ads Keyword Planner adapter** ([#16]) — the
   `google-ads` provider is now a working opt-in adapter rather than a
   stub. With `pip install "site-context-pipeline[google-ads]"` and a
@@ -284,6 +303,7 @@ Initial public extraction.
 
 [Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.4.0...HEAD
 [#16]: https://github.com/OtShelniko/site-context-pipeline/issues/16
+[#17]: https://github.com/OtShelniko/site-context-pipeline/issues/17
 [#18]: https://github.com/OtShelniko/site-context-pipeline/issues/18
 [0.4.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.4.0
 [0.3.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.3.0

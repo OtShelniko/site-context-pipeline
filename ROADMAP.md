@@ -85,9 +85,11 @@ site-context-pipeline[<extra>]`); credentials live in env or local
   call behind the `[google-ads]` extra. Returns `not_configured` when
   the extra or credentials are missing; never imports the SDK at
   module load.
-- **Optional live Google Search Console adapter** — replaces the
-  `google-search-console` stub with a real Search Analytics API call.
-  Extra: `[gsc]`.
+- **Optional live Google Search Console adapter** ✅ *(landed)* —
+  replaces the `google-search-console` stub with a real Search
+  Analytics API call behind the `[gsc]` extra. Returns
+  `not_configured` when the extra or credentials are missing; never
+  imports the client libraries at module load.
 - **Optional third-party / regional keyword providers** — community
   adapters for the data sources their authors use. The toolkit will
   accept a Yandex Wordstat adapter, a DataForSEO adapter, an Ahrefs

@@ -68,6 +68,10 @@ docs = [
 google-ads = [
     "google-ads>=24",
 ]
+gsc = [
+    "google-api-python-client>=2.100",
+    "google-auth-oauthlib>=1.2",
+]
 
 [project.urls]
 Homepage = "https://github.com/OtShelniko/site-context-pipeline"
@@ -152,5 +156,12 @@ exclude = ["tests/", "build/", "dist/", "site/"]
 ignore_missing_imports = false
 
 [[tool.mypy.overrides]]
-module = ["jsonschema.*", "referencing.*", "hypothesis.*", "google.ads.*"]
+module = [
+    "jsonschema.*",
+    "referencing.*",
+    "hypothesis.*",
+    "google.ads.*",
+    "google.oauth2.*",
+    "googleapiclient.*",
+]
 ignore_missing_imports = true
