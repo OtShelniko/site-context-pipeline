@@ -12,6 +12,6 @@ try:
 except PackageNotFoundError:  # pragma: no cover - source tree without install
     # Running from a source checkout that was never installed. Keep this in
     # sync with [project].version in pyproject.toml as a last-resort fallback.
-    __version__ = "0.4.0"
+    __version__ = "0.5.0"
 
 __all__ = ["__version__"]

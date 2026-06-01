@@ -7,6 +7,16 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Nothing yet. See [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md) for what is planned.
+
+## [0.5.0] — 2026-06-01
+
+Ships both optional live API adapters and rounds out the provider
+docs and test coverage. The base install still has **zero runtime
+dependencies**; the live adapters live behind opt-in extras and
+degrade to a structured `not_configured` result when unconfigured.
+No breaking changes; the artifact `schema_version` stays at `1`.
+
 ### Added
 
 - **Live Google Search Console adapter** ([#17]) — the
@@ -301,7 +311,8 @@ Initial public extraction.
   (e.g. `google-ads`). Core schemas, CLI verbs, and artifact field
   names stay vendor-neutral.
 
-[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.5.0
 [#16]: https://github.com/OtShelniko/site-context-pipeline/issues/16
 [#17]: https://github.com/OtShelniko/site-context-pipeline/issues/17
 [#18]: https://github.com/OtShelniko/site-context-pipeline/issues/18
