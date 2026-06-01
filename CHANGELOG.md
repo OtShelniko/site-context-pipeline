@@ -7,7 +7,18 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet. See [`ROADMAP.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/ROADMAP.md) for what is planned.
+### Added
+
+- **Performance benchmark.** New `tests/test_perf_benchmark.py` is a
+  budgeted regression guard that builds a synthetic site and asserts
+  each core builder (inventory, link graph, context pack) finishes
+  within a wall-clock budget — catching algorithmic regressions
+  (e.g. an accidental O(n²) join) on any runner. Runs at 2,000 URLs
+  by default; scale via `SCP_PERF_URLS`. A companion
+  `scripts/perf_benchmark.py` generates a synthetic site at any size
+  and prints per-stage timings for ad-hoc profiling. At 50,000 URLs
+  the full pipeline runs in ~33 s locally (linear scaling). No
+  production code changes; documented in `CONTRIBUTING.md`.
 
 ## [0.5.0] — 2026-06-01
 
