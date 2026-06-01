@@ -36,7 +36,12 @@ def test_registry_lists_local_providers() -> None:
 
     live_keyword = {entry["name"] for entry in listing["keyword"] if entry["live"]}
     assert "local-csv" in live_keyword
-    assert "google-ads" not in live_keyword
+    # google-ads is now an opt-in live adapter (works with the
+    # [google-ads] extra + credentials), so it is flagged live.
+    assert "google-ads" in live_keyword
+    # google-search-console is still a stub.
+    live_perf = {entry["name"] for entry in listing["search_performance"] if entry["live"]}
+    assert "google-search-console" not in live_perf
 
 
 def test_unknown_provider_raises_configuration_error() -> None:
