@@ -1,5 +1,10 @@
 [build-system]
-requires = ["hatchling>=1.18"]
+# Pin hatchling below 1.27: from 1.27 it emits "Metadata-Version: 2.5",
+# which the twine bundled in gh-action-pypi-publish@release/v1 rejects with
+# "InvalidDistribution: '2.5' is not a valid metadata version". 1.26.x emits
+# 2.3, which uploads cleanly. Lift this ceiling once the publish action
+# ships a twine that accepts 2.5.
+requires = ["hatchling>=1.18,<1.27"]
 build-backend = "hatchling.build"
 
 [project]
