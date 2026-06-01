@@ -286,7 +286,7 @@ Listing in this release:
 | Provider name | Kind | Status | Notes |
 |---|---|---|---|
 | `local-csv` | keyword | **live** | Read keyword metrics from any local CSV (Google Ads export, Ahrefs / Semrush export, hand-curated research). Offline. |
-| `google-ads` | keyword | stub | Returns `not_configured`. Live Google Ads Keyword Planner support is on the roadmap behind an optional extra. |
+| `google-ads` | keyword | **live (opt-in)** | Live Google Ads Keyword Planner ideas. Needs `pip install "site-context-pipeline[google-ads]"` and credentials via `--config`; returns `not_configured` otherwise. |
 | `local-gsc-csv` | search_performance | **live** | Read per-query performance from a Google Search Console Performance CSV export. Offline. |
 | `google-search-console` | search_performance | stub | Returns `not_configured`. Live Search Console API access is on the roadmap behind an optional extra. |
 | `local-serp-csv` | search_evidence | **live** | Read hand-curated SERP rows (query, rank, title, url, snippet, page_type) from a local CSV. Offline; the toolkit does not scrape SERPs. |

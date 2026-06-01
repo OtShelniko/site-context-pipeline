@@ -165,34 +165,50 @@ site-context-pipeline import-search-evidence \
 | | |
 |---|---|
 | **Identifier & kind** | `google-ads` · `KeywordProvider` |
-| **Status** | **stub** (live adapter is [issue #16](https://github.com/OtShelniko/site-context-pipeline/issues/16)) |
-| **Install requirements** | will require the `[google-ads]` extra when live |
-| **Output artifact** | `data/keyword_metrics.json` (when live) |
+| **Status** | **live (opt-in)** — requires the `[google-ads]` extra and credentials |
+| **Install requirements** | `pip install "site-context-pipeline[google-ads]"` |
+| **Output artifact** | `data/keyword_metrics.json` |
 | **Row `source`** | `google-ads` |
 
-### Inputs (planned)
+### Inputs
 
-The live adapter will call
+The adapter calls
 [`KeywordPlanIdeaService.GenerateKeywordIdeas`](https://developers.google.com/google-ads/api/docs/keyword-planning/generate-keyword-ideas)
-with config supplied via env vars and/or
-`<client>/config/google_ads.json`:
+with config supplied via `--config <client>/config/google_ads.json`
+(gitignored) or built from environment variables:
 
-| Config key | Purpose |
-|---|---|
-| `customer_id` | Google Ads customer ID |
-| `developer_token` | Google Ads developer token |
-| `refresh_token` | OAuth refresh token |
-| `client_id` / `client_secret` | OAuth client credentials |
-| `geo_target_constants` | e.g. `["geoTargetConstants/2840"]` |
-| `language_constant` | e.g. `"languageConstants/1000"` |
-| `seeds` | keyword seeds, URL seeds, or both |
+| Config key | Required | Purpose |
+|---|---|---|
+| `customer_id` | **yes** | Google Ads customer ID |
+| `developer_token` | **yes** | Google Ads developer token |
+| `client_id` / `client_secret` | **yes** | OAuth client credentials |
+| `refresh_token` | **yes** | OAuth refresh token |
+| `seeds` | one of `seeds`/`page_url` | list of seed phrases |
+| `page_url` | one of `seeds`/`page_url` | URL seed to expand from |
+| `geo_target_constants` | no | e.g. `["geoTargetConstants/2840"]` |
+| `language_constant` | no | e.g. `"languageConstants/1000"` |
+| `login_customer_id` | no | manager (MCC) account, if used |
 
-Credentials are read from the environment or a gitignored config file —
-**never** committed and never serialised into an artifact.
+Credentials are read from the config or the environment — **never**
+committed, never logged, never serialised into an artifact. The
+`customer_id` is masked in result metadata.
+
+### Output
+
+One `KeywordMetric` per returned idea: `query`, `avg_monthly_searches`,
+`competition` (`LOW`/`MEDIUM`/`HIGH`), and `raw` with the top-of-page
+bid micros for forensics. `source` is `google-ads`.
 
 ### Failure modes
 
-In this release the stub always returns:
+| Condition | Behaviour |
+|---|---|
+| no `--config` / empty config | `not_configured` result (`ok=false`, exit 1), points at `local-csv` |
+| config present but missing a required key | raises `ProviderConfigurationError` naming the keys |
+| `[google-ads]` extra not installed | `missing_dependency` result (`ok=false`, exit 1) |
+| config complete but no `seeds`/`page_url` | raises `ProviderConfigurationError` |
+
+The not-configured payload:
 
 ```json
 {
@@ -200,28 +216,33 @@ In this release the stub always returns:
   "provider": "google-ads",
   "items": [],
   "errors": ["not_configured"],
-  "metadata": {
-    "reason": "not_configured",
-    "suggestion": "Live Google Ads Keyword Planner access is not implemented in this release. For now, export keyword ideas as CSV and import with --provider local-csv."
-  }
+  "metadata": {"blocked_reason": "not_configured", "suggestion": "…"}
 }
 ```
 
-The CLI converts this into exit code `1` plus the JSON above. The stub
-never raises and never touches the network.
+The adapter never makes a network call until a complete credential
+block is supplied, and never imports the SDK at module load.
 
-### Rate limits (planned)
+### Rate limits
 
 The Google Ads API enforces per-developer-token operation quotas and
-applies `GoogleAdsException` with `RESOURCE_EXHAUSTED` when throttled.
-The live adapter will batch seed keywords per request and surface a
-`rate_limited` warning rather than retrying blindly.
+raises `GoogleAdsException` with `RESOURCE_EXHAUSTED` when throttled.
+Keep seed batches modest; the adapter sends all seeds in a single
+`GenerateKeywordIdeas` request.
 
-### Worked example (today)
+### Worked example
 
 ```bash
-# Returns not_configured + a suggestion; exits 1.
+# Offline: returns not_configured + a suggestion, exits 1.
 site-context-pipeline import-keywords --client demo --provider google-ads
+
+# Live (requires the extra + a credentials file):
+pip install "site-context-pipeline[google-ads]"
+site-context-pipeline import-keywords \
+    --client demo \
+    --provider google-ads \
+    --config clients/demo/config/google_ads.json \
+    --write
 ```
 
 ---

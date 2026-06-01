@@ -231,7 +231,7 @@ These rules apply to every present and future provider:
 | Name | Kind | Status | Live in 0.1? |
 |---|---|---|---|
 | `local-csv` | keyword | live | yes |
-| `google-ads` | keyword | stub | no — returns `not_configured` |
+| `google-ads` | keyword | live (opt-in) | yes — needs `[google-ads]` extra + credentials |
 | `local-gsc-csv` | search_performance | live | yes |
 | `google-search-console` | search_performance | stub | no — returns `not_configured` |
 | `local-serp-csv` | search_evidence | live | yes |

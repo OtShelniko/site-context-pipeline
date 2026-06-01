@@ -9,6 +9,21 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Live Google Ads Keyword Planner adapter** ([#16]) — the
+  `google-ads` provider is now a working opt-in adapter rather than a
+  stub. With `pip install "site-context-pipeline[google-ads]"` and a
+  credential block passed via `--config`, it calls
+  `KeywordPlanIdeaService.GenerateKeywordIdeas` and emits
+  `KeywordMetric` rows (`query`, `avg_monthly_searches`,
+  `competition`). The `google-ads` SDK is imported lazily inside the
+  adapter so the base install keeps zero runtime dependencies;
+  credentials are never logged or serialised, and the `customer_id`
+  is masked in result metadata. Missing config → `not_configured`;
+  missing extra → `missing_dependency`; malformed config →
+  `ProviderConfigurationError`. The mapping and validation logic is
+  fully unit-tested with fakes (no SDK, no network); 32 new tests in
+  `tests/test_google_ads_adapter.py`. New `[google-ads]` optional
+  extra in `pyproject.toml`. Test count 228 → 260.
 - **Per-provider reference** ([#18]) — new
   [`docs/provider-reference.md`](https://github.com/OtShelniko/site-context-pipeline/blob/main/docs/provider-reference.md)
   documents every shipped provider with a fixed eight-heading layout
@@ -268,6 +283,7 @@ Initial public extraction.
   names stay vendor-neutral.
 
 [Unreleased]: https://github.com/OtShelniko/site-context-pipeline/compare/v0.4.0...HEAD
+[#16]: https://github.com/OtShelniko/site-context-pipeline/issues/16
 [#18]: https://github.com/OtShelniko/site-context-pipeline/issues/18
 [0.4.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.4.0
 [0.3.0]: https://github.com/OtShelniko/site-context-pipeline/releases/tag/v0.3.0

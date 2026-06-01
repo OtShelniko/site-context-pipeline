@@ -80,9 +80,11 @@ ships behind an optional extra (`pip install
 site-context-pipeline[<extra>]`); credentials live in env or local
 `.env` files and never in artifacts.
 
-- **Optional live Google Ads Keyword Planner adapter** — replaces the
-  `google-ads` stub with a real `KeywordPlanIdeaService` call. Extra:
-  `[google-ads]`.
+- **Optional live Google Ads Keyword Planner adapter** ✅ *(landed)* —
+  replaces the `google-ads` stub with a real `KeywordPlanIdeaService`
+  call behind the `[google-ads]` extra. Returns `not_configured` when
+  the extra or credentials are missing; never imports the SDK at
+  module load.
 - **Optional live Google Search Console adapter** — replaces the
   `google-search-console` stub with a real Search Analytics API call.
   Extra: `[gsc]`.

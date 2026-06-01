@@ -43,8 +43,9 @@ _PROVIDER_DESCRIPTIONS: dict[str, str] = {
         "Ahrefs/Semrush export, hand-curated research). Offline."
     ),
     GoogleAdsKeywordPlannerProvider.provider_name: (
-        "Stub for live Google Ads Keyword Planner access. Returns "
-        "not_configured in this release; export CSV and use local-csv."
+        "Live Google Ads Keyword Planner adapter (opt-in). Needs the "
+        "[google-ads] extra and credentials via --config; returns "
+        "not_configured otherwise. Offline-safe by default."
     ),
     LocalSearchConsoleCsvProvider.provider_name: (
         "Read search-performance data from a local Google Search Console "
@@ -126,10 +127,16 @@ def available_providers() -> dict[str, Any]:
 
 
 def _is_live(name: str) -> bool:
-    """Heuristic flag: ``True`` for adapters that actually do work in this
-    release, ``False`` for stubs that return not_configured."""
+    """Heuristic flag: ``True`` for adapters that can do real work in this
+    release, ``False`` for stubs that always return not_configured.
+
+    ``google-ads`` is live but opt-in: it does real work once the
+    ``[google-ads]`` extra is installed and credentials are supplied,
+    and degrades to a structured ``not_configured`` result otherwise.
+    """
     return name in {
         LocalKeywordCsvProvider.provider_name,
         LocalSearchConsoleCsvProvider.provider_name,
         LocalSearchEvidenceCsvProvider.provider_name,
+        GoogleAdsKeywordPlannerProvider.provider_name,
     }
